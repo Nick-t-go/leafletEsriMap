@@ -1,0 +1,108 @@
+<div id="map" style="height: 100%">
+    <!-- Button trigger modal -->
+   <!--  <button style="position: absolute; z-index: 500;" type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+      Launch demo modal
+    </button> -->
+
+    <a style="position: absolute; z-index: 500;" href="https://fs-gdb10:6443/arcgis/tokens/" type="button" class="btn btn-primary btn-lg" >
+      Launch Authentication
+    </a>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Sign In</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+                  <label for="usr">Name:</label>
+                  <input type="text" class="form-control" id="usr" ng-model="user.name">
+                </div>
+                <div class="form-group">
+                  <label for="pwd">Password:</label>
+                  <input type="password" class="form-control" id="pwd" ng-model="user.password">
+                </div>
+          </div>
+          <div class="modal-footer">
+            <p>{{user.name}}</p>
+            <p>{{user.password}}</p>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      var map = L.map('map').setView([34.326, -117.697], 12);
+
+      L.esri.basemapLayer('Topographic').addTo(map);
+
+      function serverAuth(callback){
+        L.esri.post('https://fs-gdb10:6443/arcgis/tokens/generateToken', {
+          username: 'ntoscano',
+          password: '***********',
+          f: 'json',
+          expiration: 86400,
+          client: 'referer',
+          referer: window.location.origin
+        }, callback);
+      }
+
+      serverAuth(function(error, response){
+        var dl = L.esri.featureLayer({
+          url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SuffolkCountySewers/MapServer/16',
+          opacity: 1,
+          token:  response.token,
+          style: function(feature){
+            return {color:'#FF4500', weight: 2}}
+        }).addTo(map);
+
+        dl.on('authenticationrequired', function (e) {
+          serverAuth(function(error, response){
+            e.authenticate(response.token);
+          });
+        });
+      });
+
+
+      // function serverAuth(callback){
+      //   L.esri.post('https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SuffolkCountySewers/tokens/generateToken', {
+      //     username: 'ntoscano',
+      //     password: '421010Odip!',
+      //     f: 'json',
+      //     expiration: 60,
+      //     client: 'referer',
+      //     referer: window.location.origin}, callback);
+      //     }
+
+      // var parks = L.esri.featureLayer({
+      //   url: "http://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/services/Portland_Parks/FeatureServer/0",
+      //   style: function () {
+      //     return { color: "#70ca49", weight: 2 };
+      //   }
+      // }).addTo(map);
+
+      // serverAuth(function(error,response){
+      //     var contractBorders = L.esri.featureLayer({
+      //       url: "https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SuffolkCountySewers/MapServer/16",
+      //       token: response.token
+      //     }).addTo(map);
+
+      //     contractBorders.on('authenticationrequred', function(e){
+      //       serverAuth(function(error,response){
+      //           e.authenticate(response.token);
+      //       });
+      //     });
+      //   });  
+
+
+      // var popupTemplate = "<h3>{NAME}</h3>{ACRES} Acres<br><small>Property ID: {PROPERTYID}<small>";
+
+      // parks.bindPopup(function(e){
+      //   return L.Util.template(popupTemplate, e.feature.properties)
+      //});
+</script>

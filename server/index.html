@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ArcMap HelloWorld</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    
+    <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.16/esri/css/esri.css">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
+    <script src="http://cdn.jsdelivr.net/leaflet.esri/2.0.0-beta.7/esri-leaflet.js"></script>
+
+
+
+<body style="height:100%" ng-app="quickApp" >
+
+<div style="height:1000px"  ui-view></div>
+
+<script type="text/javascript" src="/jquery/dist/jquery.min.js"></script>
+<!-- <script src="https://js.arcgis.com/3.16/"></script> -->
+<script type="text/javascript" src="/angular/angular.js"></script>
+<script type="text/javascript" src="/angular-esri-map/dist/angular-esri-map.js"></script>
+<script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="/angular-ui-router/release/angular-ui-router.min.js"></script>
+<script type="text/javascript" src="/app/main.js"></script>
+<script type="text/javascript" src="/app/map.controller.js"></script>
+<script type="text/javascript" src="/app/customer.detail.controller.js"></script>
+<script type="text/javascript" src="/app/authenticate.factory.js"></script>
+</body>
+</html>
