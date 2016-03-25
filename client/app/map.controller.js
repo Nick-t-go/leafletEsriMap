@@ -21,7 +21,7 @@ app.controller('MapCtrl', function($scope, Auth ){
     function serverAuth(callback){
        L.esri.post('https://fs-gdb10:6443/arcgis/tokens/generateToken', {
          username: 'ntoscano',
-         password: '**********',
+         password: "****",
          f: 'json',
          expiration: 86400,
          client: 'referer',
@@ -30,11 +30,11 @@ app.controller('MapCtrl', function($scope, Auth ){
      }
 
      serverAuth(function(error, response){
-     	console.log
        var dl = L.esri.featureLayer({
          url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SuffolkCountySewers/MapServer/16',
          opacity: 1,
          token:  response.token,
+         onEachFeature: onEachFeature,
          style: function(feature){
          	console.l
            return {color:'#FF4500', weight: 2}}
@@ -47,12 +47,45 @@ app.controller('MapCtrl', function($scope, Auth ){
        });
        var query = L.esri.Related.query(dl);
 
+       dl.on('mouseover', highlightFeature);
+       dl.on('mouseout', resetHighlight);
+       
+       function highlightFeature(e) {
+        console.log(dl._layers[1].feature.properties.ContractNumber)
+        var layer = e.layer;
+        layer.setStyle({
+          weight: 5,
+          color: '#666',
+          dashArray: '',
+          fillOpacity: 0.7
+          });
+        if (!L.Browser.ie && !L.Browser.opera) {
+            layer.bringToFront();
+        }
+      }
+
+
+      function onEachFeature(feature, layer) {
+        layer._id = feature.id
+      }
+
+
+      function resetHighlight(e) {
+        var layer = e.layer
+        layer.setStyle({
+          color:'#FF4500',
+          weight: 2,
+          fillOpacity: .1
+        })
+      }
+
        //wire up event listener to fire query when users click on a feature
        dl.on("click", queryRelated);
 
        function queryRelated (evt) {
+        // console.log(dl.query().nearby(evt.latlng,1).featureIds(function(ids){return ids}))
         dl.query().nearby(evt.latlng,1).ids(function(error, ids){
-          console.log(ids)}))
+          forEach})
         //if multiple ids let user click one polygon
         //else run function that returns records
         if($scope.displayInfo)
