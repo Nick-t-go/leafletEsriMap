@@ -1,6 +1,6 @@
 'use strict';
 
-window.app = angular.module('quickApp', ['ui.router']);
+window.app = angular.module('quickApp', ['ui.router', 'esri.map']);
 
 app.config(function($urlRouterProvider, $stateProvider){
     $stateProvider
