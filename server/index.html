@@ -8,6 +8,7 @@
     
     <link rel="stylesheet" type="text/css" href="//js.arcgis.com/3.16/esri/css/esri.css">
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.css" />
+    <link rel="stylesheet" href="leaflet-minimap/src/Control.MiniMap.css"/>
     <script src="http://cdn.leafletjs.com/leaflet/v1.0.0-beta.2/leaflet.js"></script>
     <script src="http://cdn.jsdelivr.net/leaflet.esri/2.0.0-beta.7/esri-leaflet.js"></script>
 
@@ -15,13 +16,15 @@
 
 <body style="height:100%" ng-app="quickApp" >
 
-<div style="height:1000px"  ui-view></div>
+<div style="height:100vh"  ui-view></div>
 
 <script type="text/javascript" src="/jquery/dist/jquery.min.js"></script>
 <!-- <script src="https://js.arcgis.com/3.16/"></script> -->
 <script type="text/javascript" src="/angular/angular.js"></script>
 <script type="text/javascript" src="/angular-esri-map/dist/angular-esri-map.js"></script>
+<script src="http://cdn.jsdelivr.net/leaflet.esri.related/2.0.0/esri-leaflet-related.js"></script>
 <script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/leaflet-minimap/src/Control.MiniMap.js"></script>
 
 <script type="text/javascript" src="/angular-ui-router/release/angular-ui-router.min.js"></script>
 <script type="text/javascript" src="/app/main.js"></script>

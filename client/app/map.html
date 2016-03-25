@@ -36,37 +36,52 @@
       </div>
     </div>
 
+
+  <div id="info-pane" class="leaflet-bar"></div>
+
     <script>
-      var map = L.map('map').setView([34.326, -117.697], 12);
 
-      L.esri.basemapLayer('Topographic').addTo(map);
 
-      function serverAuth(callback){
-        L.esri.post('https://fs-gdb10:6443/arcgis/tokens/generateToken', {
-          username: 'ntoscano',
-          password: '***********',
-          f: 'json',
-          expiration: 86400,
-          client: 'referer',
-          referer: window.location.origin
-        }, callback);
-      }
+//      function serverAuth(callback){
+//        L.esri.post('https://fs-gdb10:6443/arcgis/tokens/generateToken', {
+//          username: 'ntoscano',
+//          password: '421010Odip!',
+//          f: 'json',
+//          expiration: 86400,
+//          client: 'referer',
+//          referer: window.location.origin
+//        }, callback);
+//      }
+//
+//      serverAuth(function(error, response){
+//        var dl = L.esri.featureLayer({
+//          url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SuffolkCountySewers/MapServer/16',
+//          opacity: 1,
+//          token:  response.token,
+//          style: function(feature){
+//            return {color:'#FF4500', weight: 2}}
+//        }).addTo(map);
+//
+//        dl.on('authenticationrequired', function (e) {
+//          serverAuth(function(error, response){
+//            e.authenticate(response.token);
+//          });
+//        });
+//        var query = L.esri.Related.query(dl);
+//
+//        //wire up event listener to fire query when users click on a feature
+//        dl.on("click", queryRelated);
+//
+//        function queryRelated (evt) {
+//          query.objectIds([evt.layer.feature.id]).relationshipId("0").run(function(error, response, raw) {
+//            document.getElementById("info-pane").innerHTML += '<br><br>matching rows: ' + response.features.length;
+//          })
+//        }
+//
+//
+//      });
 
-      serverAuth(function(error, response){
-        var dl = L.esri.featureLayer({
-          url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SuffolkCountySewers/MapServer/16',
-          opacity: 1,
-          token:  response.token,
-          style: function(feature){
-            return {color:'#FF4500', weight: 2}}
-        }).addTo(map);
 
-        dl.on('authenticationrequired', function (e) {
-          serverAuth(function(error, response){
-            e.authenticate(response.token);
-          });
-        });
-      });
 
 
       // function serverAuth(callback){
@@ -106,3 +121,4 @@
       //   return L.Util.template(popupTemplate, e.feature.properties)
       //});
 </script>
+    </div>
