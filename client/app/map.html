@@ -4,20 +4,61 @@
       Launch demo modal
     </button> -->
 
-  <div id="info-pane" class="leaflet-bar" style="top:100px; left:100px;position: absolute; z-index: 500;">Hello</div>
     <button style="left: 5%; position: absolute; z-index: 500;"  type="button" class="btn btn-primary btn-lg" ng-click="activateContracts()" >
       Check Contracts
     </button>
+  <!-- <div style="left: 5%; bottom:10%; position: absolute; z-index: 500" class="list-group">
+    <li class="list-group-item active">Selected Features</li>
+    <li ng-repeat="selection in selectedFeatures track by $index" ng-mouseover="getLayerHighlight(selection.OBJECTID)"
+    ng-mouseleave="getLayerReset(selection.OBJECTID)" class="list-group-item" ng-click="returnRelated(selection.OBJECTID)">{{$index + 1}}: {{selection.ContractNumber}}</li>
+  </div>
+  <div style="right: 1%; bottom:50%; position: absolute; z-index: 500" class="list-group">
+  </div>
     <div style="right: 5%; position: absolute; z-index: 500" ng-show=displayInfo>
       <div class="panel panel-default">
-        <div class="panel-heading"><h4>Contract Info</h4></div>
+        <li class="list-group-item active">Feature Contracts</li>
+      <li ng-hide="data.length < 1"ng-repeat="relations in data track by $index" ng-style="relations.style"class="list-group-item" ng-click="returnContract(relations.properties)">{{$index + 1}}: {{relations.properties.ContractNumber}}</li>
         <div class="panel-body">
         <ul>
-          <li><h5>Contract Name:</h5> {{data.ContractName}}</li>
-          <li><h5>Contract Number:</h5> {{data.ContractNumber}}</li>
-          <li><h5>Link:</h5> {{data.WebRelativeImagePath}}</li>
+          <li><h5>Contract Name:</h5> {{contract.ContractName}}</li>
+          <li><h5>Contract Number:</h5> {{contract.ContractNumber}}</li>
+          <li><h5>Link:</h5> {{contract.WebRelativeImagePath}}</li>
         </ul>
         </div>
       </div>  
     </div>
+    <div> -->
+
+  <div style="right: 1%; bottom:50%; position: absolute; z-index: 500" class="list-group">
+      <label>ContractNumber only <input ng-model="search.ContractNumber"></label><br>
+      <button type="button" class="btn btn-primary btn-lg" ng-click="conArray()">Button</button>
+  </div>
+  <!-- Nav tabs -->
+  <div style="right: 1%; position: absolute; z-index: 500" ng-hide="displayInfo === false || selectedFeatures.length===0">
+    <ul  class="nav nav-tabs" role="tablist" id="contract-tabs">
+      <li role="contracts"><a href="#home" id="selected-features" aria-controls="home" role="tab" data-toggle="tab">Selected Features</a></li>
+      <li role="contracts"><a href="#profile" id="contracts" aria-controls="profile" role="tab" data-toggle="tab">Contracts</a></li>
+      <li role="contracts"><a href="#messages" id="contract-details" aria-controls="messages" role="tab" data-toggle="tab">Contract Details</a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane" id="home">
+       <!--  <li class="list-group-item active">Selected Features</li> -->
+        <li ng-repeat="selection in selectedFeatures track by $index" ng-mouseover="getLayerHighlight(selection.OBJECTID)"
+        ng-mouseleave="getLayerReset(selection.OBJECTID)" class="list-group-item" ng-click="returnRelated(selection.OBJECTID)">{{$index + 1}}: {{selection.ContractNumber}}</li>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="profile">
+        <!-- <li class="list-group-item active">Feature Contracts</li> -->
+        <li ng-hide="data.length < 1"ng-repeat="relations in data track by $index" ng-style="relations.style"class="list-group-item" ng-click="returnContract(relations.properties)">{{$index + 1}}: {{relations.properties.ContractNumber}}</li>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="messages">
+          <li class="list-group-item"><h5>Contract Name:</h5> {{contract.ContractName}}</li>
+          <li class="list-group-item"><h5>Contract Number:</h5> {{contract.ContractNumber}}</li>
+          <li class="list-group-item"><h5>Link:</h5> {{contract.WebRelativeImagePath}}</li>
+      </div>
+    </div>
+  </div>
+
+</div>
   </div>
