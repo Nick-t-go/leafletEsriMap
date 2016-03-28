@@ -31,7 +31,7 @@
 
   <div style="right: 1%; bottom:50%; position: absolute; z-index: 500" class="list-group">
       <label>ContractNumber only <input ng-model="search.ContractNumber"></label><br>
-      <button type="button" class="btn btn-primary btn-lg" ng-click="conArray()">Button</button>
+      <button type="button" class="btn btn-primary btn-lg" ng-click="queryByString(search.ContractNumber)">Button</button>
   </div>
   <!-- Nav tabs -->
   <div style="right: 1%; position: absolute; z-index: 500" ng-hide="displayInfo === false || selectedFeatures.length===0">

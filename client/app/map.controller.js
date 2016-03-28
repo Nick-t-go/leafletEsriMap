@@ -1,7 +1,7 @@
 /**
  * Created by uzer-y on 2/3/16.
  */
-app.controller('MapCtrl', function($scope, Auth ){
+app.controller('MapCtrl', function($scope ){
 
   $scope.displayInfo = false;
   $scope.selectedFeatures = [];
@@ -39,7 +39,7 @@ app.controller('MapCtrl', function($scope, Auth ){
     function serverAuth(callback){
        L.esri.post('https://fs-gdb10:6443/arcgis/tokens/generateToken', {
          username: 'ntoscano',
-         password: "***!",
+         password: "****!",
          f: 'json',
          expiration: 86400,
          client: 'referer',
@@ -52,24 +52,37 @@ app.controller('MapCtrl', function($scope, Auth ){
          url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SuffolkCountySewers/MapServer/16',
          opacity: 1,
          token:  response.token,
-         onEachFeature: onEachFeature,
+         // onEachFeature: onEachFeature,
          style: function(feature){
-         	console.l
            return {color:'#FF4500', weight: 2}}
        }).addTo(map);
+
+       $scope.tblContracts = L.esri.featureLayer({
+        url: "https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SuffolkCountySewers/MapServer/21",
+        token:  response.token
+       })
+
+
+       $scope.tblContracts.on('authenticationrequired', function (e) {
+         serverAuth(function(error, response){
+           e.authenticate(response.token);
+         });
+       });
 
        dl.on('authenticationrequired', function (e) {
          serverAuth(function(error, response){
            e.authenticate(response.token);
          });
        });
+
        $scope.query = L.esri.Related.query(dl);
 
        dl.on('mouseover', highlightFeature);
        dl.on('mouseout', resetHighlight);
 
 
-       
+       console.log(dl)
+       console.log($scope.tblContracts)
        function highlightFeature(e) {
         var layer = e.layer;
         layer.setStyle({
@@ -84,9 +97,9 @@ app.controller('MapCtrl', function($scope, Auth ){
       }
 
 
-      function onEachFeature(feature, layer) {
-        layer._id = feature.id
-      }
+      // function onEachFeature(feature, layer) {
+      //   layer._id = feature.id
+      // }
 
       $scope.getLayerHighlight=function(id){
         var e = {}
@@ -129,5 +142,23 @@ app.controller('MapCtrl', function($scope, Auth ){
         //if multiple ids let user click one polygon
         //else run function that returns records
        }
+
+       $scope.queryByString= function(string){
+          
+          $scope.selectedFeatures = []
+          dl.query().where("ContractNumber = '"+string+"'").ids(function(error, ids){
+          if(ids){
+            ids.forEach(function(id){
+              $scope.selectedFeatures.push(dl._layers[id].feature.properties)
+              $scope.returnRelated($scope.selectedFeatures[0].OBJECTID)
+            })
+          }
+          $scope.$digest()
+          $("#contract-details").tab('show')
+        })
+        }
+
+
+
      });
    })
