@@ -41,8 +41,9 @@ app.controller('MapCtrl', function($scope){
     $("#contract-details").tab('show')
   }
 
-  $scope.returnDoc =  function(selectedItem){
+  $scope.returnDoc =  function(selectedItem, type){
     $scope.doc = selectedItem;
+    $scope.doc.type = type
  }
 
 
@@ -64,7 +65,7 @@ app.controller('MapCtrl', function($scope){
     function serverAuth(callback){
        L.esri.post('https://fs-gdb10:6443/arcgis/tokens/generateToken', {
          username: 'ntoscano',
-         password: "*****!",
+         password: "********",
          f: 'json',
          expiration: 86400,
          client: 'referer',

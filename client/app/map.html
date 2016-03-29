@@ -26,22 +26,28 @@
         <h5 class="list-group-item active">Related Docs</h5>
         <ul>
           <h4>Contracts</h4>
-          <li ng-hide="relatedRecords.contracts.length < 1" ng-repeat="contract in relatedRecords.contracts" class="list-group-item" ng-click="returnDoc(contract.properties)"> {{contract.properties.ContractNumber}}
+          <li ng-hide="relatedRecords.contracts.length < 1" ng-repeat="contract in relatedRecords.contracts" class="list-group-item" ng-click="returnDoc(contract.properties, 'contract')"> {{contract.properties.ContractNumber}}
           </li>
           <p ng-if="relatedRecords.contracts.length<1">No Available Contracts</p>
           <h4>Docs</h4>
-          <li ng-hide="relatedRecords.documents < 1" ng-repeat="document in relatedRecords.documents" ng-click="returnDoc(document.properties)" class="list-group-item">{{document.properties.Description}}
+          <li ng-hide="relatedRecords.documents < 1" ng-repeat="document in relatedRecords.documents" ng-click="returnDoc(document.properties, 'doc')" class="list-group-item">{{document.properties.Description}}
           </li>
           <p ng-if="relatedRecords.documents.length < 1">No Other Available Docs</p>
         </ul>
       <!-- <li ng-hide="relatedRecords.contracts.length < 1 && relatedRecords.documents < 1"ng-repeat="relations in data track by $index" ng-style="relations.style"class="list-group-item" ng-click="returnContract(relations.properties)">{{$index + 1}}: {{relations.properties.ContractNumber}}</li> -->
         <div class="panel-body">
-        <ul>
-          <li><h5>Contract Number:</h5> {{doc.ContractNumber}}</li>
+        <ul ng-show="doc.type === 'contract'">
+          <li><h5>Contract Number:</h5> {{doc.ContractNumber }}</li>
           <li><h5>Contract Name:</h5> {{doc.ContractName}}</li>
           <li ng-if="doc.dSMuniOrSAgency===1"><h5 > Sewer Agency Municipal or SA:</h5 > Sewer Agency</li>
           <li ng-if="doc.dSMuniOrSAgency===0"><h5 > Sewer Agency Municipal or SA:</h5 > Municipal</li>
           <li><h5>Year Built:</h5> {{doc.YearBuilt}}</li>
+          <li><h5>Link:</h5> {{doc.WebRelativeImagePath}}</li>
+        </ul>
+        <ul ng-show="doc.type === 'doc'">
+          <li><h5>Document Type:</h5> {{doc.fkDocumentType || 'not specified' }}</li>
+          <li><h5>Description:</h5> {{doc.Description}}</li>
+          <li><h5>Date:</h5> {{doc.SubmissionDate  | date:'longDate' }}</li>
           <li><h5>Link:</h5> {{doc.WebRelativeImagePath}}</li>
         </ul>
         </div>
