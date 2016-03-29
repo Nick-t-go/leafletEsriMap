@@ -9,3 +9,19 @@
 .nav li a {
 	background-color: whitesmoke;
 }
+
+
+
+
+.modal
+{
+	width:50%;
+	height:30%;
+    overflow: hidden;
+
+}
+.modal-dialog{
+    margin-right: 0;
+    margin-left: 0;
+    margin:0;
+}

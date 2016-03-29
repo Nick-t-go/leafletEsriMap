@@ -3,6 +3,21 @@
  */
 app.controller('MapCtrl', function($scope){
 
+
+
+    $("#myModal").draggable({
+      handle: ".modal-header"
+  });
+
+
+  var div = L.DomUtil.get('myModal');
+  if (!L.Browser.touch) {
+      L.DomEvent.disableClickPropagation(div);
+      L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation);
+  } else {
+      L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation);
+  }
+
   $scope.displayInfo = false;
   $scope.selectedFeatures = [];
   $scope.selectedDistricts = [];
@@ -65,17 +80,13 @@ app.controller('MapCtrl', function($scope){
     function serverAuth(callback){
        L.esri.post('https://fs-gdb10:6443/arcgis/tokens/generateToken', {
          username: 'ntoscano',
-         password: "********",
+         password: "421010Odip!",
          f: 'json',
          expiration: 86400,
          client: 'referer',
          referer: window.location.origin
        }, callback);
      }
-
-
-
-
 
      serverAuth(function(error, response){
        var dl = L.esri.featureLayer({

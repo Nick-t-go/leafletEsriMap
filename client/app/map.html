@@ -1,24 +1,65 @@
 <div id="map" style="height: 100%">
 
-    <button style="left: 5%; position: absolute; z-index: 500;"  type="button" class="btn btn-primary btn-lg" ng-click="activateDirective('contractInfo')">
-      Check Contracts
-    </button>
-    <button style="left: 20%; position: absolute; z-index: 500;"  type="button" class="btn btn-primary btn-lg" ng-click="activateDirective('districtInfo')">
-      Check Districts
-    </button>
+          <div class="side-menu" id="sideMenu">
+          <menu style=" position: absolute; z-index: 500;">
+              <ul class="nav nav-tabs nav-stacked">
+                  <li><a href="#myModal" data-backdrop="false" data-toggle="modal"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>  Search and Select</a>
+                  </li>
+              </ul>
+          </menu>
+      </div>
+      <div id="myModal" class="modal fade">
+          <div class="modal-dialog"> 
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                       <h4 class="modal-title">Search Layer</h4>
+                       <select ng-model="something" class="selectpicker">
+                          <option>Contract Outline</option>
+                          <option>Sewer District</option>
+                          <option>Relish</option>
+                        </select>
+                        <button type="button" class="btn btn-default" aria-label="Left Align">
+                          <span class="glyphicon glyphicon-hand-up" aria-hidden="true"></span>
+                        </button>
+                        <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="showSearch=true">
+                          <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                        </button>                 
+                  </div>
+                  <div class="modal-body">
+                      <button   type="button" class="btn btn-primary btn-md" ng-click="activateDirective('contractInfo')">Check Contracts</button>
+                       <button   type="button" class="btn btn-primary btn-md" ng-click="activateDirective('districtInfo')">Check Districts</button>
+                       <div ng-show="showSearch">
+                          <label>ContractNumber<input ng-model="search.ContractNumber"></label>
+                          <button type="button" class="btn btn-primary btn-sm" ng-click="queryByString(search.ContractNumber)">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>     Search
+                          </button>
+                        </div>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary">Save changes</button>
+                  </div>
+              </div>
+              <!-- /.modal-content -->
+          </div>
+          <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+
+    
   
 
-  <div style="right: 1%; bottom:50%; position: absolute; z-index: 500" class="list-group">
-      <label>ContractNumber only <input ng-model="search.ContractNumber"></label><br>
-      <button type="button" class="btn btn-primary btn-lg" ng-click="queryByString(search.ContractNumber)">Button</button>
-  </div>
+  
 
   <contract-info></contract-info>
-  <div ng-show="displayInfo ==='districtInfo'">
-   <div style="left: 5%; bottom:10%; position: absolute; z-index: 500" class="list-group">
+
+  <div id="newDrag" ng-show="displayInfo ==='districtInfo'">
+   <div style="left: 5%; bottom:10%; position: absolute; z-index: 500" class="list-group drag-me">
     <li class="list-group-item active">Selected Districts</li>
     <li ng-repeat="selection in selectedDistricts track by $index" class="list-group-item" ng-click="returnRelatedDistricts(selection.OBJECTID)">{{$index + 1}}: {{selection}}</li>
   </div>
+
   <div style="right: 1%; bottom:50%; position: absolute; z-index: 500" class="list-group">
   </div>
     <div style="right: 5%; position: absolute; z-index: 500" ng-show=displayInfo>
