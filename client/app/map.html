@@ -15,11 +15,11 @@
                       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                        <h4 class="modal-title">Search Layer</h4>
                        <select ng-model="something" class="selectpicker">
-                          <option>Contract Outline</option>
-                          <option>Sewer District</option>
+                          <option value="contractInfo">Contract Outline</option>
+                          <option value="districtInfo">Sewer District</option>
                           <option>Relish</option>
                         </select>
-                        <button type="button" class="btn btn-default" aria-label="Left Align">
+                        <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="activateDirective(something)">
                           <span class="glyphicon glyphicon-hand-up" aria-hidden="true"></span>
                         </button>
                         <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="showSearch=true">
@@ -27,8 +27,6 @@
                         </button>                 
                   </div>
                   <div class="modal-body">
-                      <button   type="button" class="btn btn-primary btn-md" ng-click="activateDirective('contractInfo')">Check Contracts</button>
-                       <button   type="button" class="btn btn-primary btn-md" ng-click="activateDirective('districtInfo')">Check Districts</button>
                        <div ng-show="showSearch">
                           <label>ContractNumber<input ng-model="search.ContractNumber"></label>
                           <button type="button" class="btn btn-primary btn-sm" ng-click="queryByString(search.ContractNumber)">

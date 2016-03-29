@@ -15,7 +15,7 @@
       </div>
       <div role="tabpanel" class="tab-pane" id="profile">
         <!-- <li class="list-group-item active">Feature Contracts</li> -->
-        <li ng-hide="data.length < 1"ng-repeat="relations in data track by $index" ng-style="relations.style"class="list-group-item" ng-click="returnContract(relations.properties)">{{$index + 1}}: {{relations.properties.ContractNumber}}</li>
+        <li ng-hide="relatedRecords.contracts.length < 1" ng-repeat="contract in relatedRecords.contracts track by $index" ng-style="contract.style"class="list-group-item" ng-click="returnContract(contract.properties)">{{$index + 1}}: {{contract.properties.ContractNumber}}</li>
       </div>
       <div role="tabpanel" class="tab-pane" id="messages">
           <li class="list-group-item"><h5>Contract Name:</h5> {{contract.ContractName}}</li>

@@ -3,12 +3,9 @@
  */
 app.controller('MapCtrl', function($scope){
 
-
-
     $("#myModal").draggable({
       handle: ".modal-header"
   });
-
 
   var div = L.DomUtil.get('myModal');
   if (!L.Browser.touch) {
@@ -25,25 +22,26 @@ app.controller('MapCtrl', function($scope){
   $scope.doc = ""
 
   $scope.returnRelated = function(objectId){
-         $scope.query.objectIds([objectId]).relationshipId(4).run(function(error, response, raw) {
-           $scope.data = response.features;
-           $scope.data[0].style = {'background-color': 'lightgrey'}
-           $scope.contract = response.features[0].properties
-           $scope.$digest()
-         })
-         $("#contracts").tab('show')
+    $scope.query.objectIds([objectId]).relationshipId(4).run(function(error, response, raw) {
+      $scope.relatedRecords.contracts = response.features;
+      $scope.relatedRecords.contracts[0].style = {'background-color': 'lightgrey'}
+      $scope.contract = response.features[0].properties
+      $scope.$digest()
+    })
+
+    $("#contracts").tab('show')
   }
 
   $scope.returnRelatedDistricts = function(objectId){
-         $scope.distQuery.objectIds([objectId]).relationshipId(6).run(function(error, response, raw) {
-           $scope.relatedRecords.contracts = response.features;
-           $scope.$digest()
-         })
-         $scope.distQuery.objectIds([objectId]).relationshipId(5).run(function(error, response, raw) {
-           $scope.relatedRecords.documents = response.features;
-           $scope.$digest()
-         })
-         console.log($scope.relatedRecords)
+    $scope.relatedRecords = {};
+    $scope.distQuery.objectIds([objectId]).relationshipId(6).run(function(error, response, raw) {
+     $scope.relatedRecords.contracts = response.features;
+     $scope.$digest()
+    })
+    $scope.distQuery.objectIds([objectId]).relationshipId(5).run(function(error, response, raw) {
+     $scope.relatedRecords.documents = response.features;
+     $scope.$digest()
+    })
   }
 
 
@@ -65,6 +63,7 @@ app.controller('MapCtrl', function($scope){
 
   $scope.activateDirective = function(section){
     $scope.displayInfo = section;
+    $scope.showSearch = false;
   }
 
     $scope.user = {};
