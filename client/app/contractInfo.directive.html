@@ -1,0 +1,26 @@
+<!-- Nav tabs -->
+  <div style="right: 1%; position: absolute; z-index: 500" ng-hide="displayInfo === false || selectedFeatures.length===0">
+    <ul  class="nav nav-tabs" role="tablist" id="contract-tabs">
+      <li role="contracts"><a href="#home" id="selected-features" aria-controls="home" role="tab" data-toggle="tab">Selected Features</a></li>
+      <li role="contracts"><a href="#profile" id="contracts" aria-controls="profile" role="tab" data-toggle="tab">Contracts</a></li>
+      <li role="contracts"><a href="#messages" id="contract-details" aria-controls="messages" role="tab" data-toggle="tab">Contract Details</a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane" id="home">
+       <!--  <li class="list-group-item active">Selected Features</li> -->
+        <li ng-repeat="selection in selectedFeatures track by $index" ng-mouseover="getLayerHighlight(selection.OBJECTID)"
+        ng-mouseleave="getLayerReset(selection.OBJECTID)" class="list-group-item" ng-click="returnRelated(selection.OBJECTID)">{{$index + 1}}: {{selection.ContractNumber}}</li>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="profile">
+        <!-- <li class="list-group-item active">Feature Contracts</li> -->
+        <li ng-hide="data.length < 1"ng-repeat="relations in data track by $index" ng-style="relations.style"class="list-group-item" ng-click="returnContract(relations.properties)">{{$index + 1}}: {{relations.properties.ContractNumber}}</li>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="messages">
+          <li class="list-group-item"><h5>Contract Name:</h5> {{contract.ContractName}}</li>
+          <li class="list-group-item"><h5>Contract Number:</h5> {{contract.ContractNumber}}</li>
+          <li class="list-group-item"><h5>Link:</h5> {{contract.WebRelativeImagePath}}</li>
+      </div>
+    </div>
+  </div>

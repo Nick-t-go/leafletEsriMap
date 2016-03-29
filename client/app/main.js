@@ -9,17 +9,6 @@ app.config(function($urlRouterProvider, $stateProvider){
             templateUrl: '/app/map.html',
             controller: 'MapCtrl'
         });
-    $stateProvider
-        .state('customerDetail',{
-            url: '/:id',
-            templateUrl: '/app/customer.detail.html',
-            controller: 'CustomerDetailController',
-            resolve: {
-                customer: function(CustomerFactory, $stateParams){
-                    return CustomerFactory.getCustomer($stateParams.id);
-                }
-            }
-        });
 
     $urlRouterProvider.otherwise('/');
 

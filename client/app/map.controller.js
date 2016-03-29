@@ -1,7 +1,7 @@
 /**
  * Created by uzer-y on 2/3/16.
  */
-app.controller('MapCtrl', function($scope ){
+app.controller('MapCtrl', function($scope){
 
   $scope.displayInfo = false;
   $scope.selectedFeatures = [];
@@ -29,8 +29,10 @@ app.controller('MapCtrl', function($scope ){
   }
 
     $scope.user = {};
-
-    var map = L.map('map').setView([40.792240, -73.138260], 12);
+    
+    if(!map){
+      var map = L.map('map').setView([40.792240, -73.138260], 12);
+    }
 
     L.esri.basemapLayer('Topographic').addTo(map);
 
@@ -39,7 +41,7 @@ app.controller('MapCtrl', function($scope ){
     function serverAuth(callback){
        L.esri.post('https://fs-gdb10:6443/arcgis/tokens/generateToken', {
          username: 'ntoscano',
-         password: "****!",
+         password: "*****",
          f: 'json',
          expiration: 86400,
          client: 'referer',
@@ -52,22 +54,19 @@ app.controller('MapCtrl', function($scope ){
          url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SuffolkCountySewers/MapServer/16',
          opacity: 1,
          token:  response.token,
-         // onEachFeature: onEachFeature,
          style: function(feature){
            return {color:'#FF4500', weight: 2}}
        }).addTo(map);
 
-       $scope.tblContracts = L.esri.featureLayer({
-        url: "https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SuffolkCountySewers/MapServer/21",
-        token:  response.token
-       })
 
+       var sd = L.esri.featureLayer({
+         url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SCSewers/MapServer/10',
+         opacity: 1,
+         token:  response.token,
+         style: function(feature){
+           return {color:'#4169e1', weight: 2}}
+       }).addTo(map);
 
-       $scope.tblContracts.on('authenticationrequired', function (e) {
-         serverAuth(function(error, response){
-           e.authenticate(response.token);
-         });
-       });
 
        dl.on('authenticationrequired', function (e) {
          serverAuth(function(error, response){
@@ -75,14 +74,20 @@ app.controller('MapCtrl', function($scope ){
          });
        });
 
+       sd.on('authenticationrequired', function (e) {
+         serverAuth(function(error, response){
+           e.authenticate(response.token);
+         });
+       });
+
+
        $scope.query = L.esri.Related.query(dl);
 
        dl.on('mouseover', highlightFeature);
        dl.on('mouseout', resetHighlight);
 
 
-       console.log(dl)
-       console.log($scope.tblContracts)
+       
        function highlightFeature(e) {
         var layer = e.layer;
         layer.setStyle({
@@ -95,11 +100,6 @@ app.controller('MapCtrl', function($scope ){
             layer.bringToFront();
         }
       }
-
-
-      // function onEachFeature(feature, layer) {
-      //   layer._id = feature.id
-      // }
 
       $scope.getLayerHighlight=function(id){
         var e = {}
@@ -115,10 +115,10 @@ app.controller('MapCtrl', function($scope ){
       }
 
 
-      function resetHighlight(e) {
+      function resetHighlight(e, color) {
         var layer = e.layer
         layer.setStyle({
-          color:'#FF4500',
+          color: '#FF4500',
           weight: 2,
           fillOpacity: .1
         })
