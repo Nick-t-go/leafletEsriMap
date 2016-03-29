@@ -5,9 +5,12 @@ app.controller('MapCtrl', function($scope){
 
   $scope.displayInfo = false;
   $scope.selectedFeatures = [];
+  $scope.selectedDistricts = [];
+  $scope.relatedRecords = {}
+  $scope.doc = ""
 
   $scope.returnRelated = function(objectId){
-         $scope.query.objectIds([objectId]).relationshipId(6).run(function(error, response, raw) {
+         $scope.query.objectIds([objectId]).relationshipId(4).run(function(error, response, raw) {
            $scope.data = response.features;
            $scope.data[0].style = {'background-color': 'lightgrey'}
            $scope.contract = response.features[0].properties
@@ -15,17 +18,37 @@ app.controller('MapCtrl', function($scope){
          })
          $("#contracts").tab('show')
   }
+
+  $scope.returnRelatedDistricts = function(objectId){
+         $scope.distQuery.objectIds([objectId]).relationshipId(6).run(function(error, response, raw) {
+           $scope.relatedRecords.contracts = response.features;
+           $scope.$digest()
+         })
+         $scope.distQuery.objectIds([objectId]).relationshipId(5).run(function(error, response, raw) {
+           $scope.relatedRecords.documents = response.features;
+           $scope.$digest()
+         })
+         console.log($scope.relatedRecords)
+  }
+
+
+
   $scope.returnContract =  function(selectedItem){
     $scope.data.forEach(function(item){
       item.properties === selectedItem ? item.style = {'background-color': 'lightgrey'} : item.style = {}
     })
     $scope.contract = selectedItem;
     $("#contract-details").tab('show')
-
   }
 
-  $scope.activateContracts = function(){
-    $scope.displayInfo = !$scope.displayInfo;
+  $scope.returnDoc =  function(selectedItem){
+    $scope.doc = selectedItem;
+ }
+
+
+
+  $scope.activateDirective = function(section){
+    $scope.displayInfo = section;
   }
 
     $scope.user = {};
@@ -41,7 +64,7 @@ app.controller('MapCtrl', function($scope){
     function serverAuth(callback){
        L.esri.post('https://fs-gdb10:6443/arcgis/tokens/generateToken', {
          username: 'ntoscano',
-         password: "*****",
+         password: "*****!",
          f: 'json',
          expiration: 86400,
          client: 'referer',
@@ -51,7 +74,7 @@ app.controller('MapCtrl', function($scope){
 
      serverAuth(function(error, response){
        var dl = L.esri.featureLayer({
-         url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SuffolkCountySewers/MapServer/16',
+         url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SCSewers/MapServer/16',
          opacity: 1,
          token:  response.token,
          style: function(feature){
@@ -60,7 +83,7 @@ app.controller('MapCtrl', function($scope){
 
 
        var sd = L.esri.featureLayer({
-         url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SCSewers/MapServer/10',
+         url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SCSewers/MapServer/17',
          opacity: 1,
          token:  response.token,
          style: function(feature){
@@ -82,6 +105,7 @@ app.controller('MapCtrl', function($scope){
 
 
        $scope.query = L.esri.Related.query(dl);
+       $scope.distQuery = L.esri.Related.query(sd);
 
        dl.on('mouseover', highlightFeature);
        dl.on('mouseout', resetHighlight);
@@ -115,7 +139,7 @@ app.controller('MapCtrl', function($scope){
       }
 
 
-      function resetHighlight(e, color) {
+      function resetHighlight(e) {
         var layer = e.layer
         layer.setStyle({
           color: '#FF4500',
@@ -126,6 +150,7 @@ app.controller('MapCtrl', function($scope){
 
        //wire up event listener to fire query when users click on a feature
        dl.on("click", queryRelated);
+       sd.on("click", queryRelatedMulti);
 
        function queryRelated (evt) {
         $("#selected-features").tab('show')
@@ -142,6 +167,22 @@ app.controller('MapCtrl', function($scope){
         //if multiple ids let user click one polygon
         //else run function that returns records
        }
+
+
+       function queryRelatedMulti (evt) {
+        $scope.selectedDistricts = []
+        sd.query().nearby(evt.latlng,1).ids(function(error, ids){
+          if(ids){
+            ids.forEach(function(id){
+              $scope.selectedDistricts.push(sd._layers[id].feature.properties)
+            })
+          }
+          $scope.$digest()
+        })
+       }
+
+
+
 
        $scope.queryByString= function(string){
           

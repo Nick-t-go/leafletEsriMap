@@ -1,9 +1,9 @@
 <div id="map" style="height: 100%">
 
-    <button style="left: 5%; position: absolute; z-index: 500;"  type="button" class="btn btn-primary btn-lg" ng-click="activateContracts()">
+    <button style="left: 5%; position: absolute; z-index: 500;"  type="button" class="btn btn-primary btn-lg" ng-click="activateDirective('contractInfo')">
       Check Contracts
     </button>
-    <button style="left: 20%; position: absolute; z-index: 500;"  type="button" class="btn btn-primary btn-lg" ng-click="activateDistricts()">
+    <button style="left: 20%; position: absolute; z-index: 500;"  type="button" class="btn btn-primary btn-lg" ng-click="activateDirective('districtInfo')">
       Check Districts
     </button>
   
@@ -14,6 +14,40 @@
   </div>
 
   <contract-info></contract-info>
+  <div ng-show="displayInfo ==='districtInfo'">
+   <div style="left: 5%; bottom:10%; position: absolute; z-index: 500" class="list-group">
+    <li class="list-group-item active">Selected Districts</li>
+    <li ng-repeat="selection in selectedDistricts track by $index" class="list-group-item" ng-click="returnRelatedDistricts(selection.OBJECTID)">{{$index + 1}}: {{selection}}</li>
+  </div>
+  <div style="right: 1%; bottom:50%; position: absolute; z-index: 500" class="list-group">
+  </div>
+    <div style="right: 5%; position: absolute; z-index: 500" ng-show=displayInfo>
+      <div class="panel panel-default">
+        <h5 class="list-group-item active">Related Docs</h5>
+        <ul>
+          <h4>Contracts</h4>
+          <li ng-hide="relatedRecords.contracts.length < 1" ng-repeat="contract in relatedRecords.contracts" class="list-group-item" ng-click="returnDoc(contract.properties)"> {{contract.properties.ContractNumber}}
+          </li>
+          <p ng-if="relatedRecords.contracts.length<1">No Available Contracts</p>
+          <h4>Docs</h4>
+          <li ng-hide="relatedRecords.documents < 1" ng-repeat="document in relatedRecords.documents" ng-click="returnDoc(document.properties)" class="list-group-item">{{document.properties.Description}}
+          </li>
+          <p ng-if="relatedRecords.documents.length < 1">No Other Available Docs</p>
+        </ul>
+      <!-- <li ng-hide="relatedRecords.contracts.length < 1 && relatedRecords.documents < 1"ng-repeat="relations in data track by $index" ng-style="relations.style"class="list-group-item" ng-click="returnContract(relations.properties)">{{$index + 1}}: {{relations.properties.ContractNumber}}</li> -->
+        <div class="panel-body">
+        <ul>
+          <li><h5>Contract Number:</h5> {{doc.ContractNumber}}</li>
+          <li><h5>Contract Name:</h5> {{doc.ContractName}}</li>
+          <li ng-if="doc.dSMuniOrSAgency===1"><h5 > Sewer Agency Municipal or SA:</h5 > Sewer Agency</li>
+          <li ng-if="doc.dSMuniOrSAgency===0"><h5 > Sewer Agency Municipal or SA:</h5 > Municipal</li>
+          <li><h5>Year Built:</h5> {{doc.YearBuilt}}</li>
+          <li><h5>Link:</h5> {{doc.WebRelativeImagePath}}</li>
+        </ul>
+        </div>
+      </div>  
+    </div>
+    </div>
 
 
   
