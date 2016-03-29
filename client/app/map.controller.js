@@ -73,6 +73,10 @@ app.controller('MapCtrl', function($scope){
        }, callback);
      }
 
+
+
+
+
      serverAuth(function(error, response){
        var dl = L.esri.featureLayer({
          url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SCSewers/MapServer/16',
