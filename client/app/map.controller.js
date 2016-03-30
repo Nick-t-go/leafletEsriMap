@@ -102,8 +102,8 @@ app.controller('MapCtrl', function($scope) {
 
     function serverAuth(callback) {
         L.esri.post('https://fs-gdb10:6443/arcgis/tokens/generateToken', {
-            username: 'ntoscano',
-            password: "421010Odip!",
+            username: myName,
+            password: myPassword,
             f: 'json',
             expiration: 86400,
             client: 'referer',
