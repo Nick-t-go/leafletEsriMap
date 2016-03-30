@@ -2,9 +2,9 @@
 	background-color: grey;
 }
 
-.active{
+/*.active{
 	background-color: grey;
-}
+}*/
 
 .nav li a {
 	background-color: whitesmoke;
@@ -33,4 +33,9 @@
     margin-right: 0;
     margin-left: 0;
     margin:0;
+}
+
+.tab-pane {
+	min-height: 100px;
+	background-color: white;
 }

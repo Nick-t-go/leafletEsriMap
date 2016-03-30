@@ -1,76 +1,80 @@
 <!-- Nav tabs -->
-  <div style="right: 1%; position: absolute; z-index: 500" ng-hide="selectedFeatures.length===0">
-    <ul  class="nav nav-tabs" role="tablist" id="contract-tabs">
-      <li role="contracts"><a href="#home" id="selected-features" aria-controls="home" role="tab" data-toggle="tab">Selected Features</a></li>
-      <li role="contracts"><a href="#profile" id="contracts" aria-controls="profile" role="tab" data-toggle="tab">Documents</a></li>
-      <li role="contracts"><a href="#messages" id="contract-details" aria-controls="messages" role="tab" data-toggle="tab">Details</a></li>
+<div style="right: 1%; position: absolute; z-index: 500" ng-hide="selectedFeatures.length===0">
+    <ul class="nav nav-tabs" role="tablist" id="contract-tabs">
+        <li role="contracts"><a href="#home" id="selected-features" aria-controls="home" role="tab" data-toggle="tab">Selected Features</a></li>
+        <li role="contracts"><a href="#profile" id="contracts" aria-controls="profile" role="tab" data-toggle="tab">Documents</a></li>
+        <li role="contracts"><a href="#messages" id="contract-details" aria-controls="messages" role="tab" data-toggle="tab">Details</a></li>
     </ul>
-
     <!-- Tab panes -->
     <div class="tab-content">
-      <div role="tabpanel" class="tab-pane" id="home">
-        <div ng-hide="displayInfo != 'Sewer Outlines'">
-       <!--  <li class="list-group-item active">Selected Features</li> -->
-          <li ng-repeat="selection in selectedFeatures track by $index" ng-mouseover="getLayerHighlight(selection.OBJECTID)"
-          ng-mouseleave="getLayerReset(selection.OBJECTID)" class="list-group-item" ng-click="returnRelated(selection.OBJECTID)">
-            {{$index + 1}}) Contract Number: {{selection.ContractNumber}}
-          </li>
+        <div role="tabpanel" class="tab-pane" id="home">
+            <div ng-hide="displayInfo != 'Sewer Sheets'">
+                <!--  <li class="list-group-item active">Selected Features</li> -->
+                <li ng-repeat="selection in selectedFeatures track by $index" class="list-group-item" ng-click="showPDF(selection.WebRelativeImagePath )">
+                    {{$index + 1}}) Contract Number: {{selection.ContractNumber}}
+                    <br> Sheet Number: {{selection.SheetNumA}}
+                </li>
+            </div>
+            <div ng-hide="displayInfo != 'Sewer Outlines'">
+                <!--  <li class="list-group-item active">Selected Features</li> -->
+                <li ng-repeat="selection in selectedFeatures track by $index" ng-mouseover="getLayerHighlight(selection.OBJECTID)" ng-mouseleave="getLayerReset(selection.OBJECTID)" class="list-group-item" ng-click="returnRelated(selection.WebRelativeImagePath)">
+                    {{$index + 1}}) Contract Number: {{selection.ContractNumber}}
+                </li>
+            </div>
+            <div ng-hide="displayInfo != 'Sewer Districts'">
+                <!--  <li class="list-group-item active">Selected Features</li> -->
+                <li ng-repeat="selection in selectedFeatures track by $index" ng-mouseover="getLayerHighlight(selection.OBJECTID)" ng-mouseleave="getLayerReset(selection.OBJECTID)" class="list-group-item" ng-click="returnRelatedDistricts(selection.OBJECTID)">
+                    {{$index + 1}}) SD Number: {{selection.SDShortName}}
+                    <br> District Name: {{selection.SdLongName}}
+                    <br> Locality: {{selection.SdLocality}}
+                    <br> Life Cycle Status: {{selection.dSdLifeCycleStatus}}
+                </li>
+            </div>
         </div>
-        <div ng-hide="displayInfo != 'Sewer Districts'">
-       <!--  <li class="list-group-item active">Selected Features</li> -->
-          <li ng-repeat="selection in selectedFeatures track by $index" ng-mouseover="getLayerHighlight(selection.OBJECTID)"
-          ng-mouseleave="getLayerReset(selection.OBJECTID)" class="list-group-item" ng-click="returnRelatedDistricts(selection.OBJECTID)">
-            {{$index + 1}}) SD Number: {{selection.SDShortName}}<br>
-            District Name: {{selection.SdLongName}}<br>
-            Locality:  {{selection.SdLocality}}<br> 
-            Life Cycle Status: {{selection.dSdLifeCycleStatus}}
-          </li>
+        <!--Documents Pane -->
+        <div role="tabpanel" class="tab-pane" id="profile">
+            <div ng-hide="displayInfo != 'Sewer Sheets'">
+                <!--  <li class="list-group-item active">Selected Features</li> -->
+                <li>{{imageLink}}</li>
+            </div>
+            <div ng-hide="displayInfo != 'Sewer Outlines'">
+                <!-- <li class="list-group-item active">Feature Contracts</li> -->
+                <li ng-hide="relatedRecords.contracts.length < 1" ng-repeat="contract in relatedRecords.contracts track by $index" ng-style="contract.style" class="list-group-item" ng-click="returnContract(contract.properties)">{{$index + 1}}: {{contract.properties.ContractNumber}}</li>
+                <p class="alert alert-warning" style="margin:0" ng-if="relatedRecords.contracts.length<1">No Available Contracts</p>
+            </div>
+            <div ng-hide="displayInfo != 'Sewer Districts'">
+                <p class="alert alert-info" style="margin:0" ng-if="relatedRecords.contracts.length >=1">Contracts</p>
+                <li ng-hide="relatedRecords.contracts.length < 1" ng-repeat="contract in relatedRecords.contracts" class="list-group-item" ng-click="returnDoc(contract.properties, 'contract')"> {{contract.properties.ContractNumber}}
+                </li>
+                <p class="alert alert-warning" style="margin:0" ng-if="relatedRecords.contracts.length<1">No Available Contracts</p>
+                <p class="alert alert-info" style="margin:0" ng-if="relatedRecords.documents.length>=1">Docs</p>
+                <li ng-hide="relatedRecords.documents < 1" ng-repeat="document in relatedRecords.documents" ng-click="returnDoc(document.properties, 'doc')" class="list-group-item">{{document.properties.Description}}
+                </li>
+                <p class="alert alert-warning" style="margin:0" ng-if="relatedRecords.documents.length < 1">No Other Available Docs</p>
+            </div>
         </div>
-      </div>
-
-      <!--Documents Pane -->
-      <div role="tabpanel" class="tab-pane" id="profile">
-        <div ng-hide="displayInfo != 'Sewer Outlines'">
-          <!-- <li class="list-group-item active">Feature Contracts</li> -->
-          <li ng-hide="relatedRecords.contracts.length < 1" ng-repeat="contract in relatedRecords.contracts track by $index" ng-style="contract.style"class="list-group-item" ng-click="returnContract(contract.properties)">{{$index + 1}}: {{contract.properties.ContractNumber}}</li>
-          <p class="alert alert-warning" style="margin:0" ng-if="relatedRecords.contracts.length<1">No Available Contracts</p>
+        <div style="background-color:white" role="tabpanel" class="tab-pane" id="messages">
+            <div ng-hide="displayInfo != 'Sewer Outlines'">
+                <li class="list-group-item">Contract Name: {{contract.ContractName}}</li>
+                <li class="list-group-item">Contract Number: {{contract.ContractNumber}}</li>
+                <li class="list-group-item">Link: {{contract.WebRelativeImagePath}}</li>
+            </div>
+            <div ng-hide="displayInfo != 'Sewer Districts'">
+                <ul ng-show="doc.type === 'contract'">
+                    <li>Contract Number: {{doc.ContractNumber }}</li>
+                    <li>Contract Name: {{doc.ContractName}}</li>
+                    <li ng-if="doc.dSMuniOrSAgency===1">Sewer Agency Municipal or SA: Sewer Agency</li>
+                    <li ng-if="doc.dSMuniOrSAgency===0">Sewer Agency Municipal or SA: Municipal</li>
+                    <li>Year Built: {{doc.YearBuilt}}</li>
+                    <li>Link: {{doc.WebRelativeImagePath}}</li>
+                </ul>
+                <ul ng-show="doc.type === 'doc'">
+                    <li>Document Type: {{doc.fkDocumentType || 'not specified' }}</li>
+                    <li>Description: {{doc.Description}}</li>
+                    <li>Date: {{doc.SubmissionDate | date:'longDate' }}</li>
+                    <li>Link: {{doc.WebRelativeImagePath}}</li>
+                </ul>
+            </div>
         </div>
-        <div ng-hide="displayInfo != 'Sewer Districts'">
-          <p class="alert alert-info" style="margin:0" ng-if="relatedRecords.contracts.length >=1">Contracts</p>
-          <li ng-hide="relatedRecords.contracts.length < 1" ng-repeat="contract in relatedRecords.contracts" class="list-group-item" ng-click="returnDoc(contract.properties, 'contract')"> {{contract.properties.ContractNumber}}
-          </li>
-          <p class="alert alert-warning" style="margin:0" ng-if="relatedRecords.contracts.length<1">No Available Contracts</p>
-          <p class="alert alert-info" style="margin:0" ng-if="relatedRecords.documents.length>=1">Docs</p>
-          <li ng-hide="relatedRecords.documents < 1" ng-repeat="document in relatedRecords.documents" ng-click="returnDoc(document.properties, 'doc')" class="list-group-item">{{document.properties.Description}}
-          </li>
-          <p class="alert alert-warning" style="margin:0" ng-if="relatedRecords.documents.length < 1">No Other Available Docs</p>
-        </div>
-
-
-      </div>
-      <div style="background-color:white"role="tabpanel" class="tab-pane" id="messages">
-
-        <div ng-hide="displayInfo != 'Sewer Outlines'">
-          <li class="list-group-item">Contract Name: {{contract.ContractName}}</li>
-          <li class="list-group-item">Contract Number: {{contract.ContractNumber}}</li>
-          <li class="list-group-item">Link: {{contract.WebRelativeImagePath}}</li>
-        </div>
-          <div ng-hide="displayInfo != 'Sewer Districts'">
-            <ul ng-show="doc.type === 'contract'">
-              <li>Contract Number: {{doc.ContractNumber }}</li>
-              <li>Contract Name: {{doc.ContractName}}</li>
-              <li ng-if="doc.dSMuniOrSAgency===1">Sewer Agency Municipal or SA: Sewer Agency</li>
-              <li ng-if="doc.dSMuniOrSAgency===0">Sewer Agency Municipal or SA: Municipal</li>
-              <li>Year Built: {{doc.YearBuilt}}</li>
-              <li>Link: {{doc.WebRelativeImagePath}}</li>
-            </ul>
-            <ul ng-show="doc.type === 'doc'">
-              <li>Document Type: {{doc.fkDocumentType || 'not specified' }}</li>
-              <li>Description: {{doc.Description}}</li>
-              <li>Date: {{doc.SubmissionDate  | date:'longDate' }}</li>
-              <li>Link: {{doc.WebRelativeImagePath}}</li>
-            </ul>
-          </div>
-      </div>
     </div>
-  </div>
+</div>
