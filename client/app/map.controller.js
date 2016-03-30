@@ -37,6 +37,8 @@ app.controller('MapCtrl', function($scope) {
             $scope.selectOn.shift();
         }
         sLayer.on('click', sLayer.click)
+        sLayer.on('mouseover', $scope.highlightFeature);
+        sLayer.on('mouseout', $scope.resetHighlight);
     }
 
     $scope.returnRelated = function(objectId) {
@@ -123,6 +125,7 @@ app.controller('MapCtrl', function($scope) {
 
         $scope.dl.name = "Sewer Outlines";
         $scope.dl.click = queryRelated;
+        $scope.dl.color = '#FF4500'
         $scope.mapLayers.push($scope.dl);
 
 
@@ -137,6 +140,7 @@ app.controller('MapCtrl', function($scope) {
 
         $scope.sd.name = "Sewer Districts"
         $scope.sd.click = queryRelated;
+        $scope.sd.color = '#4169e1'
         $scope.mapLayers.push($scope.sd);
 
 
@@ -152,6 +156,7 @@ app.controller('MapCtrl', function($scope) {
 
         $scope.sewerSheets.name = "Sewer Sheets"
         $scope.sewerSheets.click = queryRelated;
+        $scope.sewerSheets.color = "#ffff00"
         $scope.mapLayers.push($scope.sewerSheets);
 
 
@@ -172,12 +177,10 @@ app.controller('MapCtrl', function($scope) {
         $scope.query = L.esri.Related.query($scope.dl);
         $scope.distQuery = L.esri.Related.query($scope.sd);
 
-        $scope.dl.on('mouseover', highlightFeature);
-        $scope.dl.on('mouseout', resetHighlight);
+        
 
 
-
-        function highlightFeature(e) {
+        $scope.highlightFeature = function(e) {
             var layer = e.layer;
             layer.setStyle({
                 weight: 5,
@@ -204,10 +207,10 @@ app.controller('MapCtrl', function($scope) {
         }
 
 
-        function resetHighlight(e) {
+        $scope.resetHighlight = function(e) {
             var layer = e.layer
             layer.setStyle({
-                color: '#FF4500',
+                color: e.target.color,
                 weight: 2,
                 fillOpacity: .1
             })
@@ -237,7 +240,7 @@ app.controller('MapCtrl', function($scope) {
         $scope.queryByString = function(string) {
 
             $scope.selectedFeatures = []
-            $scope.dl.query().where("ContractNumber = '" + string + "'").ids(function(error, ids) {
+            $scope.dl.query().where("ContractNumber LIKE '%" + string + "%'").ids(function(error, ids) {
                 if (ids) {
                     ids.forEach(function(id) {
                         $scope.selectedFeatures.push($scope.dl._layers[id].feature.properties)
@@ -245,7 +248,7 @@ app.controller('MapCtrl', function($scope) {
                     })
                 }
                 $scope.$digest()
-                $("#contract-details").tab('show')
+                $("#selected-features").tab('show')
             })
         }
 
