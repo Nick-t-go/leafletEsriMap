@@ -19,7 +19,20 @@ app.controller('MapCtrl', function($scope){
   $scope.selectedFeatures = [];
   $scope.selectedDistricts = [];
   $scope.relatedRecords = {}
-  $scope.doc = ""
+  $scope.doc = "";
+  $scope.mapLayers = [];
+  $scope.selectOn = [];
+
+  $scope.test =function(sLayer){
+    $scope.displayInfo = sLayer.name;
+    $scope.selectedFeatures = [];
+    $scope.selectOn.push(sLayer)
+    if($scope.selectOn.length > 1){
+      $scope.selectOn[0].off('click')
+      $scope.selectOn.shift();
+    }
+    sLayer.on('click', sLayer.click)
+  }
 
   $scope.returnRelated = function(objectId){
     $scope.query.objectIds([objectId]).relationshipId(4).run(function(error, response, raw) {
@@ -28,7 +41,8 @@ app.controller('MapCtrl', function($scope){
       $scope.contract = response.features[0].properties
       $scope.$digest()
     })
-
+    $scope.relatedRecords.documents = [];
+    console.log('here')
     $("#contracts").tab('show')
   }
 
@@ -57,6 +71,7 @@ app.controller('MapCtrl', function($scope){
   $scope.returnDoc =  function(selectedItem, type){
     $scope.doc = selectedItem;
     $scope.doc.type = type
+    $("#contract-details").tab('show') 
  }
 
 
@@ -79,7 +94,7 @@ app.controller('MapCtrl', function($scope){
     function serverAuth(callback){
        L.esri.post('https://fs-gdb10:6443/arcgis/tokens/generateToken', {
          username: 'ntoscano',
-         password: "421010Odip!",
+         password: "*********",
          f: 'json',
          expiration: 86400,
          client: 'referer',
@@ -88,7 +103,7 @@ app.controller('MapCtrl', function($scope){
      }
 
      serverAuth(function(error, response){
-       var dl = L.esri.featureLayer({
+       $scope.dl = L.esri.featureLayer({
          url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SCSewers/MapServer/16',
          opacity: 1,
          token:  response.token,
@@ -96,8 +111,12 @@ app.controller('MapCtrl', function($scope){
            return {color:'#FF4500', weight: 2}}
        }).addTo(map);
 
+       $scope.dl.name="Sewer Outlines";
+       $scope.dl.click = queryRelated;
+       $scope.mapLayers.push($scope.dl);
 
-       var sd = L.esri.featureLayer({
+
+       $scope.sd = L.esri.featureLayer({
          url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SCSewers/MapServer/17',
          opacity: 1,
          token:  response.token,
@@ -106,24 +125,39 @@ app.controller('MapCtrl', function($scope){
        }).addTo(map);
 
 
-       dl.on('authenticationrequired', function (e) {
+       $scope.sd = L.esri.featureLayer({
+         url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SCSewers/MapServer/7',
+         opacity: 1,
+         token:  response.token,
+         style: function(feature){
+           return {color:'#ffff00', weight: 2}}
+       }).addTo(map);
+
+
+
+       $scope.sd.name="Sewer Districts"
+       $scope.sd.click = queryRelated;
+       $scope.mapLayers.push($scope.sd);
+
+
+       $scope.dl.on('authenticationrequired', function (e) {
          serverAuth(function(error, response){
            e.authenticate(response.token);
          });
        });
 
-       sd.on('authenticationrequired', function (e) {
+       $scope.sd.on('authenticationrequired', function (e) {
          serverAuth(function(error, response){
            e.authenticate(response.token);
          });
        });
 
 
-       $scope.query = L.esri.Related.query(dl);
-       $scope.distQuery = L.esri.Related.query(sd);
+       $scope.query = L.esri.Related.query($scope.dl);
+       $scope.distQuery = L.esri.Related.query($scope.sd);
 
-       dl.on('mouseover', highlightFeature);
-       dl.on('mouseout', resetHighlight);
+       $scope.dl.on('mouseover', highlightFeature);
+       $scope.dl.on('mouseout', resetHighlight);
 
 
        
@@ -142,14 +176,14 @@ app.controller('MapCtrl', function($scope){
 
       $scope.getLayerHighlight=function(id){
         var e = {}
-        e.layer = dl._layers[id]
+        e.layer = $scope.dl._layers[id]
         highlightFeature(e)
       }
 
       $scope.getLayerReset=function(id){
         console.log("reset")
         var e = {}
-        e.layer = dl._layers[id]
+        e.layer = $scope.dl._layers[id]
         resetHighlight(e)
       }
 
@@ -164,17 +198,17 @@ app.controller('MapCtrl', function($scope){
       }
 
        //wire up event listener to fire query when users click on a feature
-       dl.on("click", queryRelated);
-       sd.on("click", queryRelatedMulti);
+       // $scope.dl.on("click", queryRelated);
+       // $scope.sd.on("click", queryRelatedMulti);
 
        function queryRelated (evt) {
         $("#selected-features").tab('show')
         $scope.selectedFeatures = []
-        // console.log(dl.query().nearby(evt.latlng,1).featureIds(function(ids){return ids}))
-        dl.query().nearby(evt.latlng,1).ids(function(error, ids){
+        // console.log($scope.dl.query().nearby(evt.latlng,1).featureIds(function(ids){return ids}))
+        $scope.dl.query().nearby(evt.latlng,1).ids(function(error, ids){
           if(ids){
             ids.forEach(function(id){
-              $scope.selectedFeatures.push(dl._layers[id].feature.properties)
+              $scope.selectedFeatures.push($scope.dl._layers[id].feature.properties)
             })
           }
           $scope.$digest()
@@ -183,29 +217,13 @@ app.controller('MapCtrl', function($scope){
         //else run function that returns records
        }
 
-
-       function queryRelatedMulti (evt) {
-        $scope.selectedDistricts = []
-        sd.query().nearby(evt.latlng,1).ids(function(error, ids){
-          if(ids){
-            ids.forEach(function(id){
-              $scope.selectedDistricts.push(sd._layers[id].feature.properties)
-            })
-          }
-          $scope.$digest()
-        })
-       }
-
-
-
-
        $scope.queryByString= function(string){
           
           $scope.selectedFeatures = []
-          dl.query().where("ContractNumber = '"+string+"'").ids(function(error, ids){
+          $scope.dl.query().where("ContractNumber = '"+string+"'").ids(function(error, ids){
           if(ids){
             ids.forEach(function(id){
-              $scope.selectedFeatures.push(dl._layers[id].feature.properties)
+              $scope.selectedFeatures.push($scope.dl._layers[id].feature.properties)
               $scope.returnRelated($scope.selectedFeatures[0].OBJECTID)
             })
           }
