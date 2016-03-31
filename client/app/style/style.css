@@ -10,6 +10,10 @@
 	background-color: whitesmoke;
 }
 
+.dropdown-menu li a{
+	background-color: white;
+}
+
 .aler {
 	padding: 0;
 	margin: 0;
@@ -17,25 +21,46 @@
 }
 
 #myModal {
-	width:50%;
-	height:30%;
-    overflow: hidden;
+	width:30%;
+	height:20%;
+    overflow: visible;
 }
-.modal-header, .modal-footer,  .modal-content, .modal
+.modal-header, .modal-content, .modal
 {
 	width:inherit;
 	height:inherit;
     overflow: hidden;
 
 }
-.modal-dialog{
-	width: 100%;
-    margin-right: 0;
-    margin-left: 0;
-    margin:0;
+
+.modal-header{
+	background-color: #719971;
+	color: white;
+}
+
+.modal-footer{
+	min-height: 36%;
+}
+@media screen and (min-width: 768px) {
+	
+	#myModal .modal-dialog, #myModal  {
+		width:400px !important;
+		height: auto !important;
+		margin: 0 !important;
+	}
+
 }
 
 .tab-pane {
 	min-height: 100px;
 	background-color: white;
+}
+
+#layerSelect{
+	 vertical-align:middle;
+
+}
+
+#selectAlert{
+	text-align: center;
 }

@@ -16,8 +16,8 @@ app.controller('MapCtrl', function($scope) {
     }
 
     $scope.showPDF = function(pdf) {
-        console.log(pdf)
         $scope.imageLink = pdf;
+        $("#contracts").tab('show')
     }
 
     $scope.displayInfo = false;
@@ -34,6 +34,8 @@ app.controller('MapCtrl', function($scope) {
         $scope.selectOn.push(sLayer)
         if ($scope.selectOn.length > 1) {
             $scope.selectOn[0].off('click')
+            $scope.selectOn[0].off('mouseover')
+            $scope.selectOn[0].off('mouseout')
             $scope.selectOn.shift();
         }
         sLayer.on('click', sLayer.click)
@@ -41,17 +43,86 @@ app.controller('MapCtrl', function($scope) {
         sLayer.on('mouseout', $scope.resetHighlight);
     }
 
-    $scope.returnRelated = function(objectId) {
+    $scope.returnRelated = function(objectId, source) {
+        $scope.relatedRecords = {};
         $scope.query.objectIds([objectId]).relationshipId(4).run(function(error, response, raw) {
             $scope.relatedRecords.contracts = response.features;
-            $scope.relatedRecords.contracts[0].style = { 'background-color': 'lightgrey' }
-            $scope.contract = response.features[0].properties
+            if (response.features.length != 0) {
+                $scope.contract = response.features[0].properties
+            } else {
+                $scope.contract = []
+            }
             $scope.$digest()
         })
-        $scope.relatedRecords.documents = [];
-        console.log('here')
-        $("#contracts").tab('show')
+        source === "textSearch" ? $("#selected-features").tab('show') : $("#contracts").tab('show')
     }
+
+
+    $scope.changeStyle = function(feature, field) {
+        console.log(feature)
+        feature.setStyle(field)
+    }
+
+    $scope.horizontalQuality = function(feature) {
+            var c, o = 0.75;
+            switch (feature.properties.FkMhHorizontalQuality) {
+                case 'GIS':
+                    c = '#007D7D';
+                    break;
+                case 'GPS/RTK with NYSNET Correction':
+                    c = '#440CE8';
+                    break;
+                case 'Survey-grade':
+                    c = '#FF0000';
+                    break;
+                case 'Survey-grade':
+                    c = '#E89C0C';
+                    break;               
+                default:
+                    c = '#8EFF0D';
+            } 
+            return { color: c, opacity: o, weight: .5 };
+        }
+
+    $scope.dPsSewerDistrict = function(feature) {
+            var c, o = 0.75;
+            switch (feature.properties.dPsSewerDistrict) {
+                case '01':
+                case '02':
+                case '03':
+                case '04':
+                case '05':
+                case '06':
+                case '07':
+                case '08':
+                    c = '#FF7FFF';
+                    break;
+                case '11':
+                case '12':
+                case '13':
+                case '14':
+                case '15':
+                case '16':
+                case '17':
+                case '18':
+                    c = '#40FF40';
+                    break;
+                case '21':
+                case '22':
+                case '23':
+                case '24':
+                case '25':
+                case '26':
+                case '27':
+                case '28':
+                    c = '#9D1FCC';
+                    break;                              
+                default:
+                    c = '#639982';
+            } 
+            return { color: c, opacity: o, weight: .5 };
+        }    
+
 
     $scope.returnRelatedDistricts = function(objectId) {
         $scope.relatedRecords = {};
@@ -161,6 +232,22 @@ app.controller('MapCtrl', function($scope) {
 
 
 
+        $scope.manholes = L.esri.featureLayer({
+            url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SCSewers/MapServer/0',
+            token: response.token,
+            pointToLayer: function(geojson, latlng) {
+                return L.circleMarker(latlng);
+            },
+            style: {
+                color: '#5B7CBA',
+                weight: 2,
+                opacity: 0.85,
+                fillOpacity: 0.5
+            }
+        }).addTo(map);
+
+
+
         $scope.dl.on('authenticationrequired', function(e) {
             serverAuth(function(error, response) {
                 e.authenticate(response.token);
@@ -173,11 +260,17 @@ app.controller('MapCtrl', function($scope) {
             });
         });
 
+        // $scope.manholes('authenticationrequired', function(e) {
+        //     serverAuth(function(error, response) {
+        //         e.authenticate(response.token);
+        //     });
+        // });
+
 
         $scope.query = L.esri.Related.query($scope.dl);
         $scope.distQuery = L.esri.Related.query($scope.sd);
 
-        
+
 
 
         $scope.highlightFeature = function(e) {
@@ -193,28 +286,32 @@ app.controller('MapCtrl', function($scope) {
             }
         }
 
-        $scope.getLayerHighlight = function(id) {
+        $scope.getLayerHighlight = function(parentLayer, id) {
             var e = {}
-            e.layer = $scope.dl._layers[id]
-            highlightFeature(e)
+            e.layer = parentLayer._layers[id]
+            $scope.highlightFeature(e)
+
         }
 
-        $scope.getLayerReset = function(id) {
+        $scope.getLayerReset = function(parentLayer, id) {
             console.log("reset")
-            var e = {}
-            e.layer = $scope.dl._layers[id]
-            resetHighlight(e)
+            var e = {};
+            e.layer = parentLayer._layers[id];
+            $scope.resetHighlight(e);
+            $scope.colorGrab = parentLayer.color;
         }
 
 
         $scope.resetHighlight = function(e) {
             var layer = e.layer
             layer.setStyle({
-                color: e.target.color,
+                color: e.target ? e.target.color : $scope.colorGrab,
                 weight: 2,
                 fillOpacity: .1
             })
         }
+
+        //* replace with resetStyle() method
 
         //wire up event listener to fire query when users click on a feature
         // $scope.dl.on("click", queryRelated);
@@ -239,12 +336,12 @@ app.controller('MapCtrl', function($scope) {
 
         $scope.queryByString = function(string) {
 
-            $scope.selectedFeatures = []
+            $scope.selectedFeatures = [];
             $scope.dl.query().where("ContractNumber LIKE '%" + string + "%'").ids(function(error, ids) {
                 if (ids) {
                     ids.forEach(function(id) {
                         $scope.selectedFeatures.push($scope.dl._layers[id].feature.properties)
-                        $scope.returnRelated($scope.selectedFeatures[0].OBJECTID)
+                        $scope.returnRelated($scope.selectedFeatures[0].OBJECTID, "textSearch")
                     })
                 }
                 $scope.$digest()
