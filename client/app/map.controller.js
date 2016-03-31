@@ -66,59 +66,29 @@ app.controller('MapCtrl', function($scope) {
     $scope.horizontalQuality = function(feature) {
             var c, o = 0.75;
             switch (feature.properties.FkMhHorizontalQuality) {
-                case 'GIS':
-                    c = '#007D7D';
-                    break;
-                case 'GPS/RTK with NYSNET Correction':
-                    c = '#440CE8';
-                    break;
-                case 'Survey-grade':
-                    c = '#FF0000';
-                    break;
-                case 'Survey-grade':
-                    c = '#E89C0C';
-                    break;               
+
+                case 'SURVEY':
+                    c = '#ffff00';
+                    o = 1;
+                    break;   
                 default:
-                    c = '#8EFF0D';
+                    // console.log(feature.properties.FkMhHorizontalQuality);
+                    c = '#FF5400';
             } 
             return { color: c, opacity: o, weight: .5 };
         }
 
     $scope.dPsSewerDistrict = function(feature) {
             var c, o = 0.75;
-            switch (feature.properties.dPsSewerDistrict) {
-                case '01':
-                case '02':
-                case '03':
-                case '04':
-                case '05':
-                case '06':
-                case '07':
-                case '08':
-                    c = '#FF7FFF';
+            switch (feature.properties.dCountyResponsible) {
+                case 'N':
+                    c = '#FFAA00';
                     break;
-                case '11':
-                case '12':
-                case '13':
-                case '14':
-                case '15':
-                case '16':
-                case '17':
-                case '18':
-                    c = '#40FF40';
-                    break;
-                case '21':
-                case '22':
-                case '23':
-                case '24':
-                case '25':
-                case '26':
-                case '27':
-                case '28':
-                    c = '#9D1FCC';
-                    break;                              
+                case 'Y':
+                    c = '#005CE6';
+                    break;                          
                 default:
-                    c = '#639982';
+                    c = '#FF00C5';
             } 
             return { color: c, opacity: o, weight: .5 };
         }    
