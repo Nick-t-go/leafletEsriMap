@@ -16,7 +16,7 @@
                     <li><a href="#">Restore Default</a></li>
                   </ul>
                 </div>
-                <li><a ng-click="changeStyle(manholes)" data-backdrop="false" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>  SomeButton</a>
+                <li><button ng-click="showLegend = !showLegend" data-backdrop="false" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>  SomeButton</button>
                 </li>
             </ul>
         </menu>
@@ -65,5 +65,6 @@
     </div>
     <!-- /.modal -->  
   </div>
+  <legend ng-show="showLegend"></legend>
    <contract-info></contract-info>
 </div>

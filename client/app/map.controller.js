@@ -27,6 +27,7 @@ app.controller('MapCtrl', function($scope, uStyle) {
     $scope.doc = "";
     $scope.mapLayers = [];
     $scope.selectOn = [];
+    $scope.showLegend = false;
 
     $scope.test = function(sLayer) {
         $scope.displayInfo = sLayer.name;
@@ -71,6 +72,7 @@ app.controller('MapCtrl', function($scope, uStyle) {
         featureLayer.tblField = tblField;
         featureLayer.color = color;
         $scope.mapLayers.push(featureLayer)
+        $scope.$digest()
     }
 
     
@@ -148,7 +150,7 @@ app.controller('MapCtrl', function($scope, uStyle) {
         initFeatureLayer($scope.dl, "Sewer Outlines", 'polygon',
             [{name: 'default',color: '#FF4500', weight: 2, opactiy:1 }], '#FF4500')
 
-        $scope.dl.click = $scope.queryRelated;
+        $scope.dl.click =  queryRelated;
 
         $scope.sd = L.esri.featureLayer({
             url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SCSewers/MapServer/17',
@@ -161,6 +163,8 @@ app.controller('MapCtrl', function($scope, uStyle) {
 
         initFeatureLayer($scope.sd, "Sewer Districts", 'polygon',
             [{name: 'default', color: '#4169e1', weight: 2 , opactiy:1 }], '#4169e1')
+
+        $scope.sd.click =  queryRelated;
 
 
         $scope.sewerSheets = L.esri.featureLayer({
@@ -175,7 +179,7 @@ app.controller('MapCtrl', function($scope, uStyle) {
         initFeatureLayer($scope.sewerSheets, "Sewer Sheets", 'polygon',
             [{name: 'default', color: '#ffff00', weight: 2 , opactiy:1 }], "#ffff00")
 
-        $scope.sewerSheets.click = $scope.queryRelated;
+        $scope.sewerSheets.click =  queryRelated;
 
         $scope.manholes = L.esri.featureLayer({
             url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SCSewers/MapServer/0',
@@ -201,9 +205,9 @@ app.controller('MapCtrl', function($scope, uStyle) {
             token: response.token,
             }).addTo(map)
 
-        initFeatureLayer( $scope.sewerMains, "Sewer Mains", 'point')
+        initFeatureLayer( $scope.sewerMains, "Sewer Mains", 'polyline')
 
-        uStyle.subType($scope.sewerMains);
+        uStyle.subType($scope.sewerMains)
            
 
         $scope.dl.on('authenticationrequired', function(e) {
@@ -230,11 +234,6 @@ app.controller('MapCtrl', function($scope, uStyle) {
                 e.authenticate(response.token);
             });
         });
-
-
-
-
-
 
 
         $scope.query = L.esri.Related.query($scope.dl);
@@ -287,7 +286,7 @@ app.controller('MapCtrl', function($scope, uStyle) {
         // $scope.dl.on("click", queryRelated);
         // $scope.sd.on("click", queryRelatedMulti);
 
-        $scope.queryRelated = function(evt) {
+        function queryRelated(evt) {
             console.log(evt);
             $("#selected-features").tab('show')
             $scope.selectedFeatures = []
@@ -303,6 +302,7 @@ app.controller('MapCtrl', function($scope, uStyle) {
                 //if multiple ids let user click one polygon
                 //else run function that returns records
         }
+
 
         $scope.queryByString = function(string) {
 

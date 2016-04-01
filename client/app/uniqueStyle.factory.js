@@ -51,7 +51,7 @@ app.factory('uStyle', function() {
             setFields(featureLayer, [{name:'Force Main',color: '#996600',opacity:0.75, weight: .5},
                                 {name: 'Gravity', color:'#33ff00', opacity:0.75, weight: .5},
                                 {name: 'Outfall', color:'#0066ff', opacity:0.75, weight: .5}],
-                                'dCountyResponsible')
+                                'PipeSubType')
             featureLayer.setStyle(function(feature){
                 var c, o = 0.75;
                 switch (feature.properties.PipeSubType) {

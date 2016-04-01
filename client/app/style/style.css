@@ -2,9 +2,6 @@
 	background-color: grey;
 }
 
-/*.active{
-	background-color: grey;
-}*/
 
 .nav li a {
 	background-color: whitesmoke;
@@ -64,3 +61,7 @@
 #selectAlert{
 	text-align: center;
 }
+
+
+
+

@@ -4,6 +4,9 @@ app.directive('legend', function () {
         restrict: 'E',
         templateUrl: '/app/legend.directive.html',
         scope: false,
+        resolve: function($scope){
+        	$scope.digest()
+        }
     };
 
 });
