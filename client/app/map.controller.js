@@ -1,7 +1,7 @@
 /**
  * Created by uzer-y on 2/3/16.
  */
-app.controller('MapCtrl', function($scope) {
+app.controller('MapCtrl', function($scope, uStyle) {
 
     $("#myModal").draggable({
         handle: ".modal-header"
@@ -43,6 +43,7 @@ app.controller('MapCtrl', function($scope) {
         sLayer.on('mouseout', $scope.resetHighlight);
     }
 
+
     $scope.returnRelated = function(objectId, source) {
         $scope.relatedRecords = {};
         $scope.query.objectIds([objectId]).relationshipId(4).run(function(error, response, raw) {
@@ -59,40 +60,20 @@ app.controller('MapCtrl', function($scope) {
 
 
     $scope.changeStyle = function(feature, field) {
-        console.log(feature)
-        feature.setStyle(field)
+        uStyle[field](feature)
     }
 
-    $scope.horizontalQuality = function(feature) {
-            var c, o = 0.75;
-            switch (feature.properties.FkMhHorizontalQuality) {
 
-                case 'SURVEY':
-                    c = '#ffff00';
-                    o = 1;
-                    break;   
-                default:
-                    // console.log(feature.properties.FkMhHorizontalQuality);
-                    c = '#FF5400';
-            } 
-            return { color: c, opacity: o, weight: .5 };
-        }
+    function initFeatureLayer(featureLayer,name, type, fields, color, tblField){
+        featureLayer.name = name;
+        featureLayer.type = type;
+        featureLayer.fields = fields;
+        featureLayer.tblField = tblField;
+        featureLayer.color = color;
+        $scope.mapLayers.push(featureLayer)
+    }
 
-    $scope.dPsSewerDistrict = function(feature) {
-            var c, o = 0.75;
-            switch (feature.properties.dCountyResponsible) {
-                case 'N':
-                    c = '#FFAA00';
-                    break;
-                case 'Y':
-                    c = '#005CE6';
-                    break;                          
-                default:
-                    c = '#FF00C5';
-            } 
-            return { color: c, opacity: o, weight: .5 };
-        }    
-
+    
 
     $scope.returnRelatedDistricts = function(objectId) {
         $scope.relatedRecords = {};
@@ -164,11 +145,10 @@ app.controller('MapCtrl', function($scope) {
             }
         }).addTo(map);
 
-        $scope.dl.name = "Sewer Outlines";
-        $scope.dl.click = queryRelated;
-        $scope.dl.color = '#FF4500'
-        $scope.mapLayers.push($scope.dl);
+        initFeatureLayer($scope.dl, "Sewer Outlines", 'polygon',
+            [{name: 'default',color: '#FF4500', weight: 2, opactiy:1 }], '#FF4500')
 
+        $scope.dl.click = $scope.queryRelated;
 
         $scope.sd = L.esri.featureLayer({
             url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SCSewers/MapServer/17',
@@ -179,10 +159,8 @@ app.controller('MapCtrl', function($scope) {
             }
         }).addTo(map);
 
-        $scope.sd.name = "Sewer Districts"
-        $scope.sd.click = queryRelated;
-        $scope.sd.color = '#4169e1'
-        $scope.mapLayers.push($scope.sd);
+        initFeatureLayer($scope.sd, "Sewer Districts", 'polygon',
+            [{name: 'default', color: '#4169e1', weight: 2 , opactiy:1 }], '#4169e1')
 
 
         $scope.sewerSheets = L.esri.featureLayer({
@@ -194,13 +172,10 @@ app.controller('MapCtrl', function($scope) {
             }
         }).addTo(map);
 
+        initFeatureLayer($scope.sewerSheets, "Sewer Sheets", 'polygon',
+            [{name: 'default', color: '#ffff00', weight: 2 , opactiy:1 }], "#ffff00")
 
-        $scope.sewerSheets.name = "Sewer Sheets"
-        $scope.sewerSheets.click = queryRelated;
-        $scope.sewerSheets.color = "#ffff00"
-        $scope.mapLayers.push($scope.sewerSheets);
-
-
+        $scope.sewerSheets.click = $scope.queryRelated;
 
         $scope.manholes = L.esri.featureLayer({
             url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SCSewers/MapServer/0',
@@ -216,7 +191,20 @@ app.controller('MapCtrl', function($scope) {
             }
         }).addTo(map);
 
+        initFeatureLayer( $scope.manholes, "Manholes", 'point',
+            [{name: 'default', color: '#5B7CBA', weight: 2,opacity: 0.85,fillOpacity: 0.5 }], "#5B7CBA")
 
+
+        $scope.sewerMains = L.esri.featureLayer({
+            url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SCSewers/MapServer/2',
+            opacity: 1,
+            token: response.token,
+            }).addTo(map)
+
+        initFeatureLayer( $scope.sewerMains, "Sewer Mains", 'point')
+
+        uStyle.subType($scope.sewerMains);
+           
 
         $scope.dl.on('authenticationrequired', function(e) {
             serverAuth(function(error, response) {
@@ -230,11 +218,23 @@ app.controller('MapCtrl', function($scope) {
             });
         });
 
-        // $scope.manholes('authenticationrequired', function(e) {
-        //     serverAuth(function(error, response) {
-        //         e.authenticate(response.token);
-        //     });
-        // });
+        $scope.manholes.on('authenticationrequired', function(e) {
+            serverAuth(function(error, response) {
+                e.authenticate(response.token);
+            });
+        });
+
+
+        $scope.sewerMains.on('authenticationrequired', function(e) {
+            serverAuth(function(error, response) {
+                e.authenticate(response.token);
+            });
+        });
+
+
+
+
+
 
 
         $scope.query = L.esri.Related.query($scope.dl);
@@ -287,7 +287,7 @@ app.controller('MapCtrl', function($scope) {
         // $scope.dl.on("click", queryRelated);
         // $scope.sd.on("click", queryRelatedMulti);
 
-        function queryRelated(evt) {
+        $scope.queryRelated = function(evt) {
             console.log(evt);
             $("#selected-features").tab('show')
             $scope.selectedFeatures = []

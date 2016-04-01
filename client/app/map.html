@@ -10,20 +10,20 @@
                     Action <span class="caret"></span>
                   </button>
                   <ul class="dropdown-menu">
-                    <li><a ng-click="changeStyle(manholes, horizontalQuality)" data-backdrop="false"> Horizontal Quality</li>
-                    <li><a ng-click="changeStyle(manholes, dPsSewerDistrict)" data-backdrop="false"> Sewer District</li>
+                    <li><a ng-click="changeStyle(manholes, 'horizontalQuality')" data-backdrop="false"> Horizontal Quality</li>
+                    <li><a ng-click="changeStyle(manholes, 'dPsSewerDistrict')" data-backdrop="false"> Sewer District</li>
                     <li role="separator" class="divider"></li>
                     <li><a href="#">Restore Default</a></li>
                   </ul>
                 </div>
-
-
-
                 <li><a ng-click="changeStyle(manholes)" data-backdrop="false" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>  SomeButton</a>
                 </li>
             </ul>
         </menu>
     </div>
+
+
+<!--     BOOTSTRAP MODAL STUFF -->
     <div id="myModal" class="modal fade" style="width:50%; height:30%;">
         <div class="modal-dialog">
             <div class="modal-content">
