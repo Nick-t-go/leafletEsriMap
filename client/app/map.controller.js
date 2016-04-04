@@ -28,6 +28,7 @@ app.controller('MapCtrl', function($scope, uStyle) {
     $scope.mapLayers = [];
     $scope.selectOn = [];
     $scope.showLegend = false;
+    $scope.loading = false
 
     $scope.test = function(sLayer) {
         $scope.displayInfo = sLayer.name;
@@ -129,7 +130,22 @@ app.controller('MapCtrl', function($scope, uStyle) {
 
     if (!map) {
         var map = L.map('map').setView([40.792240, -73.138260], 12);
-        console.log(map)
+        map.on("boxzoomend", function(e) {
+            $scope.loading = true;
+            $scope.selectedFeatures = [];
+            $scope.selectableLayer.query().intersects(e.boxZoomBounds).ids(function(error, ids) {
+                    if (ids) {
+                        console.log(ids)
+                        ids.forEach(function(id) {
+                            $scope.selectedFeatures.push($scope.selectableLayer._layers[id].feature.properties)
+                        })
+                        $scope.loading = false;
+                    }
+                    $scope.$digest()
+                    $scope.loading = false;
+                });
+            $("#selected-features").tab('show')
+        })
     }
 
     L.esri.basemapLayer('Topographic').addTo(map);

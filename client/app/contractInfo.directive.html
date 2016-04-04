@@ -20,6 +20,7 @@
                 <li ng-repeat="selection in selectedFeatures track by $index" ng-mouseover="getLayerHighlight(dl,selection.OBJECTID)" ng-mouseleave="getLayerReset(dl,selection.OBJECTID)" class="list-group-item" ng-click="returnRelated(selection.OBJECTID)">
                     {{$index + 1}}) Contract Number: {{selection.ContractNumber}}
                 </li>
+                <i ng-show="loading" class="fa fa-spinner fa-spin" style="font-size:48px"></i>
             </div>
             <div ng-hide="displayInfo != 'Sewer Districts'">
                 <!--  <li class="list-group-item active">Selected Features</li> -->
