@@ -206,6 +206,7 @@ app.controller('MapCtrl', function($scope, uStyle) {
             [{name: 'default',color: '#FF4500', weight: 2, opactiy:1 }], '#FF4500')
 
         $scope.dl.click =  queryRelated;
+        $scope.query = L.esri.Related.query($scope.dl);
 
         $scope.sd = L.esri.featureLayer({
             url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SCSewers/MapServer/9',
@@ -291,7 +292,7 @@ app.controller('MapCtrl', function($scope, uStyle) {
         });
 
 
-        $scope.query = L.esri.Related.query($scope.dl);
+        
         $scope.distQuery = L.esri.Related.query($scope.sd);
 
 
