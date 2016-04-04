@@ -69,12 +69,12 @@ app.controller('MapCtrl', function($scope, uStyle) {
     }
 
     $scope.removeFromMap = function(layer){
-        if (map.hasLayer(layer)){
-            map.removeLayer(layer); 
+        if ($scope.map.hasLayer(layer)){
+            $scope.map.removeLayer(layer); 
             layer.visible = false;
         }
         else{
-            map.addLayer(layer); 
+            $scope.map.addLayer(layer); 
             layer.visible = true;
         } 
     }
@@ -95,11 +95,11 @@ app.controller('MapCtrl', function($scope, uStyle) {
 
     $scope.returnRelatedDistricts = function(objectId) {
         $scope.relatedRecords = {};
-        $scope.distQuery.objectIds([objectId]).relationshipId(6).run(function(error, response, raw) {
+        $scope.distQuery.objectIds([objectId]).relationshipId(5).run(function(error, response, raw) {
             $scope.relatedRecords.contracts = response.features;
             $scope.$digest()
         })
-        $scope.distQuery.objectIds([objectId]).relationshipId(5).run(function(error, response, raw) {
+        $scope.distQuery.objectIds([objectId]).relationshipId(6).run(function(error, response, raw) {
             $scope.relatedRecords.documents = response.features;
             $scope.$digest()
         })
@@ -131,13 +131,13 @@ app.controller('MapCtrl', function($scope, uStyle) {
 
     $scope.boxSelect = function(){
         if(!boxOn){
-         map.on('mousedown', handleMouseDown, this);
+         $scope.map.on('mousedown', handleMouseDown, this);
          boxOn = true
         }
         else{
             console.log('here')
-            map.off('mousedown', handleMouseDown, this);
-             map.dragging.enable();
+            $scope.map.off('mousedown', handleMouseDown, this);
+             $scope.map.dragging.enable();
             boxOn = false;
         }
     };
@@ -146,17 +146,17 @@ app.controller('MapCtrl', function($scope, uStyle) {
 
     $scope.user = {};
 
-    if (!map) {
-        var map = L.map('map').setView([40.792240, -73.138260], 12);
+    if (!$scope.map) {
+        $scope.map = L.map('map').setView([40.792240, -73.138260], 12);
 
         function handleMouseDown(event) {
-          map.boxZoom._onMouseDown.call(map.boxZoom, { clientX:event.originalEvent.clientX, clientY:event.originalEvent.clientY, which:1, shiftKey:true });
-          map.dragging.disable();
-          map.boxZoom.addHooks();
+          $scope.map.boxZoom._onMouseDown.call($scope.map.boxZoom, { clientX:event.originalEvent.clientX, clientY:event.originalEvent.clientY, which:1, shiftKey:true });
+          $scope.map.dragging.disable();
+          $scope.map.boxZoom.addHooks();
 
         }
         
-        map.on("boxzoomend", function(e) {
+        $scope.map.on("boxzoomend", function(e) {
             $scope.loading = true;
             $scope.selectedFeatures = [];
             $scope.selectableLayer.query().intersects(e.boxZoomBounds).ids(function(error, ids) {
@@ -174,9 +174,9 @@ app.controller('MapCtrl', function($scope, uStyle) {
         })
     }
 
-    L.esri.basemapLayer('Topographic').addTo(map);
+    L.esri.basemapLayer('Topographic').addTo($scope.map);
 
-    var miniMap = new L.Control.MiniMap(L.esri.basemapLayer('Topographic'), { toggleDisplay: true }).addTo(map);
+    var miniMap = new L.Control.MiniMap(L.esri.basemapLayer('Topographic'), { toggleDisplay: true }).addTo($scope.map);
     $scope.data = [];
 
 
@@ -194,13 +194,13 @@ app.controller('MapCtrl', function($scope, uStyle) {
 
     serverAuth(function(error, response) {
         $scope.dl = L.esri.featureLayer({
-            url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SCSewers/MapServer/16',
+            url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SCSewers/MapServer/8',
             opacity: 1,
             token: response.token,
             style: function(feature) {
                 return { color: '#FF4500', weight: 2 }
             }
-        }).addTo(map);
+        }).addTo($scope.map);
 
         initFeatureLayer($scope.dl, "Sewer Outlines", 'polygon',
             [{name: 'default',color: '#FF4500', weight: 2, opactiy:1 }], '#FF4500')
@@ -208,13 +208,13 @@ app.controller('MapCtrl', function($scope, uStyle) {
         $scope.dl.click =  queryRelated;
 
         $scope.sd = L.esri.featureLayer({
-            url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SCSewers/MapServer/17',
+            url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SCSewers/MapServer/9',
             opacity: 1,
             token: response.token,
             style: function(feature) {
                 return { color: '#4169e1', weight: 2 }
             }
-        }).addTo(map);
+        }).addTo($scope.map);
 
         initFeatureLayer($scope.sd, "Sewer Districts", 'polygon',
             [{name: 'default', color: '#4169e1', weight: 2 , opactiy:1 }], '#4169e1')
@@ -229,7 +229,7 @@ app.controller('MapCtrl', function($scope, uStyle) {
             style: function(feature) {
                 return { color: '#ffff00', weight: 2 }
             }
-        }).addTo(map);
+        }).addTo($scope.map);
 
         initFeatureLayer($scope.sewerSheets, "Sewer Sheets", 'polygon',
             [{name: 'default', color: '#ffff00', weight: 2 , opactiy:1 }], "#ffff00")
@@ -248,7 +248,7 @@ app.controller('MapCtrl', function($scope, uStyle) {
                 opacity: 0.85,
                 fillOpacity: 0.5
             }
-        }).addTo(map);
+        }).addTo($scope.map);
 
         initFeatureLayer( $scope.manholes, "Manholes", 'point',
             [{name: 'default', color: '#5B7CBA', weight: 2,opacity: 0.85,fillOpacity: 0.5 }], "#5B7CBA")
@@ -258,7 +258,7 @@ app.controller('MapCtrl', function($scope, uStyle) {
             url: 'https://fs-gdb10:6443/arcgis/rest/services/SuffolkCounty/SCSewers/MapServer/2',
             opacity: 1,
             token: response.token,
-            }).addTo(map)
+            }).addTo($scope.map)
 
         initFeatureLayer( $scope.sewerMains, "Sewer Mains", 'polyline')
 
