@@ -7,6 +7,8 @@ app.controller('MapCtrl', function($scope, uStyle) {
         handle: ".modal-header"
     });
 
+
+
     var div = L.DomUtil.get('myModal');
     if (!L.Browser.touch) {
         L.DomEvent.disableClickPropagation(div);
@@ -29,6 +31,7 @@ app.controller('MapCtrl', function($scope, uStyle) {
     $scope.selectOn = [];
     $scope.showLegend = false;
     $scope.loading = false
+    var boxOn = false;
 
     $scope.test = function(sLayer) {
         $scope.displayInfo = sLayer.name;
@@ -126,10 +129,33 @@ app.controller('MapCtrl', function($scope, uStyle) {
         $scope.showSearch = false;
     }
 
+    $scope.boxSelect = function(){
+        if(!boxOn){
+         map.on('mousedown', handleMouseDown, this);
+         boxOn = true
+        }
+        else{
+            console.log('here')
+            map.off('mousedown', handleMouseDown, this);
+             map.dragging.enable();
+            boxOn = false;
+        }
+    };
+    
+
+
     $scope.user = {};
 
     if (!map) {
         var map = L.map('map').setView([40.792240, -73.138260], 12);
+
+        function handleMouseDown(event) {
+          map.boxZoom._onMouseDown.call(map.boxZoom, { clientX:event.originalEvent.clientX, clientY:event.originalEvent.clientY, which:1, shiftKey:true });
+          map.dragging.disable();
+          map.boxZoom.addHooks();
+
+        }
+        
         map.on("boxzoomend", function(e) {
             $scope.loading = true;
             $scope.selectedFeatures = [];

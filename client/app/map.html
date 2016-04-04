@@ -18,6 +18,8 @@
                 </div>
                 <li><button ng-click="showLegend = !showLegend" data-backdrop="false" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>  SomeButton</button>
                 </li>
+                <li><button ng-click="boxSelect()" data-backdrop="false" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>BoxGrab</button>
+                </li>
             </ul>
         </menu>
     </div>
@@ -49,7 +51,7 @@
                 </div>
                 <div ng-show="displayInfo === 'Sewer Outlines'">
                         <label>ContractNumber
-                            <input ng-model="search.ContractNumber">
+                            <input class="inputNumber" ng-model="search.ContractNumber">
                         </label>
                         <button type="button" class="btn btn-primary btn-sm" ng-click="queryByString(search.ContractNumber)">
                             <span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search
