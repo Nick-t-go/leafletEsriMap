@@ -64,6 +64,17 @@ app.controller('MapCtrl', function($scope, uStyle) {
         uStyle[field](feature)
     }
 
+    $scope.removeFromMap = function(layer){
+        if (map.hasLayer(layer)){
+            map.removeLayer(layer); 
+            layer.visible = false;
+        }
+        else{
+            map.addLayer(layer); 
+            layer.visible = true;
+        } 
+    }
+
 
     function initFeatureLayer(featureLayer,name, type, fields, color, tblField){
         featureLayer.name = name;
@@ -71,6 +82,7 @@ app.controller('MapCtrl', function($scope, uStyle) {
         featureLayer.fields = fields;
         featureLayer.tblField = tblField;
         featureLayer.color = color;
+        featureLayer.visible = true;
         $scope.mapLayers.push(featureLayer)
         $scope.$digest()
     }
@@ -117,6 +129,7 @@ app.controller('MapCtrl', function($scope, uStyle) {
 
     if (!map) {
         var map = L.map('map').setView([40.792240, -73.138260], 12);
+        console.log(map)
     }
 
     L.esri.basemapLayer('Topographic').addTo(map);
