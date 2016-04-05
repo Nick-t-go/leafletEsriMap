@@ -7,11 +7,9 @@ app.factory('uStyle', function() {
 
     return {
 
-        horizontalQuality: function(featureLayer) {
-            setFields(featureLayer, [{name: 'SURVEY',color: '#ffff00', opacity:0.75, weight: .5},
-                                {name: 'other', color:'#FF5400', opacity:0.75, weight: .5}],
-                                'FkMhHorizontalQuality')
-            featureLayer.setStyle(function(feature){
+
+        horizontalQualityStyle:function(feature){
+            console.log('in factory')
                 var c, o = 0.75;
                 switch (feature.properties.FkMhHorizontalQuality) {
 
@@ -24,14 +22,17 @@ app.factory('uStyle', function() {
                         c = '#FF5400';
                 }
                 return { color: c, opacity: o, weight: .5 };
-            })
+            },
+
+        horizontalQuality: function(featureLayer, func) {
+            setFields(featureLayer, [{name: 'SURVEY',color: '#ffff00', opacity:0.75, weight: .5},
+                                {name: 'other', color:'#FF5400', opacity:0.75, weight: .5}],
+                                'horizontalQuality')
+            featureLayer.setStyle(func);
         },
 
-        dPsSewerDistrict: function(featureLayer) {
-            setFields(featureLayer, [{name: 'N',color: '#FFAA00',opacity:0.75},
-                                {name: 'Y', color:'#005CE6', opacity:0.75}],
-                                'dCountyResponsible')
-            featureLayer.setStyle(function(feature){
+
+        dPsSewerDistrictStyle: function(feature){
                 var c, o = 0.75;
                 switch (feature.properties.dCountyResponsible) {
                     case 'N':
@@ -42,17 +43,18 @@ app.factory('uStyle', function() {
                         break;
                 }
                 return { color: c, opacity: o, weight: .5 };
-            })
+            },
+
+        dPsSewerDistrict: function(featureLayer, func) {
+            setFields(featureLayer, [{name: 'N',color: '#FFAA00',opacity:0.75},
+                                {name: 'Y', color:'#005CE6', opacity:0.75}],
+                                'dPsSewerDistrict')
+            featureLayer.setStyle(func);
         },
 
 
 
-        subType: function(featureLayer) {
-            setFields(featureLayer, [{name:'Force Main',color: '#996600',opacity:0.75, weight: .5},
-                                {name: 'Gravity', color:'#33ff00', opacity:0.75, weight: .5},
-                                {name: 'Outfall', color:'#0066ff', opacity:0.75, weight: .5}],
-                                'PipeSubType')
-            featureLayer.setStyle(function(feature){
+        subTypeStyle: function(feature){
                 var c, o = 0.75;
                 switch (feature.properties.PipeSubType) {
                     case 1: //Force Main
@@ -66,7 +68,15 @@ app.factory('uStyle', function() {
                         break;
                 }
                 return { color: c, opacity: o, weight: .5 };
-            })
+            },
+
+
+        subType: function(featureLayer, func) {
+            setFields(featureLayer, [{name:'Force Main',color: '#996600',opacity:0.75, weight: .5},
+                                {name: 'Gravity', color:'#33ff00', opacity:0.75, weight: .5},
+                                {name: 'Outfall', color:'#0066ff', opacity:0.75, weight: .5}],
+                                'subType')
+            featureLayer.setStyle(func);
         }
     }
 })

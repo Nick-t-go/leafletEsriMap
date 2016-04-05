@@ -37,12 +37,21 @@ app.controller('DrawCtrl', function($scope, uStyle) {
 	})
 
 	//Book Mark Custom Control
-	$scope.createBookmark = function(){
-		$scope.savedBounds = ($scope.map.getBounds())
+	$scope.createBookmark = function(enteredName){
+		var newBookmark = {}
+		newBookmark.bounds = $scope.map.getBounds()
+		newBookmark.name = enteredName
+		if(!$scope.bookmarks){
+			$scope.bookmarks = [newBookmark]
+		}else{
+			$scope.bookmarks.push($scope.newBookmark)
+		}
+		// console.log($scope.bookmarks)
+		//$scope.$digest();
 	}
 
-	$scope.zoomTo = function(){
-		$scope.map.fitBounds($scope.savedBounds)
+	$scope.zoomTo = function(bookmark){
+		$scope.map.fitBounds(bookmark)
 	}
 
 	//Basemap Switch Custom Control

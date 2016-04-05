@@ -1,9 +1,43 @@
-<button ng-click="createBookmark()" style=" position: absolute; z-index: 500;" class="btn">Capture</button>
 <div style=" right: 25px; position: absolute; z-index: 500;">
-	<button ng-click="zoomTo()"  class="btn">Go To</button>
-	<div class="col-md-4 ">  
-	    <select  id="baseSelect" ng-change="changeBase(base)" class="selectpicker" ng-options="base for base in baseMapOptions" 
-	    ng-model="base">
-      	</select>
+    <div class="col-md-4 ">
+        <select id="baseSelect" ng-change="changeBase(base)" class="selectpicker" ng-options="base for base in baseMapOptions" ng-model="base">
+        </select>
     </div>
+    <div  class="col-md-6 panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="headingOne">
+                <h4 class="panel-title">
+	        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+	          BookMarks
+	        </a>
+	      </h4>
+            </div>
+            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                <div class="panel-body">
+                	<div class="row">
+		                <div class="col-lg-5">
+						    <div class="input-group">
+						  		<form name="bookForm" class="form-inline">
+						  		  <div class="form-group">
+							      	<input id="bookForm" type="text" class="form-control" name="bookForm" ng-model="book.name" required placeholder="Add bookmark name...">
+							        <button class="btn btn-default" type="button" ng-click="createBookmark(book.name)" ng-disabled="bookForm.$invalid">
+							        	Save
+							        </button>
+							      </div>
+							    </form>
+						    </div><!-- /input-group -->
+						  </div><!-- /.col-lg-6 -->
+					</div>
+                    <div class="row">
+	                    <ul>
+		                    <li>BookMark1</li>
+		                    <li>BookMark2</li>
+		                    <li ng-repeat="bookmark in bookmarks" ng-click="zoomTo(bookmark.bounds)">{{bookmark.name}}</li>
+	                    </ul>
+	                </div>    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </div>

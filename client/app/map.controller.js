@@ -65,7 +65,7 @@ app.controller('MapCtrl', function($scope, uStyle) {
 
 
     $scope.changeStyle = function(feature, field) {
-        uStyle[field](feature)
+        uStyle[field](feature, uStyle[field+'Style'])
     }
 
     $scope.removeFromMap = function(layer){
@@ -153,15 +153,15 @@ app.controller('MapCtrl', function($scope, uStyle) {
         L.easyPrint({
         title: 'My awesome print button',
         position: 'topright',
-        elementsToHide: 'button, h2, h3, .leaflet-control-minimap'
+        elementsToHide: 'button, h2, h3, .leaflet-control-minimap, .leaflet-control-zoom, .leaflet-control-attribution, draw, .nav, title'
         }).addTo($scope.map);
 
         function handleMouseDown(event) {
           $scope.map.boxZoom._onMouseDown.call($scope.map.boxZoom, { clientX:event.originalEvent.clientX, clientY:event.originalEvent.clientY, which:1, shiftKey:true });
           $scope.map.dragging.disable();
           $scope.map.boxZoom.addHooks();
-
         }
+
         
         $scope.map.on("boxzoomend", function(e) {
             $scope.loading = true;
@@ -181,7 +181,7 @@ app.controller('MapCtrl', function($scope, uStyle) {
         })
     }
 
-   
+
 
     var miniMap = new L.Control.MiniMap(L.esri.basemapLayer('Topographic'), { toggleDisplay: true }).addTo($scope.map);
     $scope.data = [];
@@ -320,28 +320,40 @@ app.controller('MapCtrl', function($scope, uStyle) {
         }
 
         $scope.getLayerHighlight = function(parentLayer, id) {
-            var e = {}
-            e.layer = parentLayer._layers[id]
-            $scope.highlightFeature(e)
-
+            layer = parentLayer._layers[id]
+            layer.setStyle({
+                weight: 5,
+                color: '#666',
+                dashArray: '',
+                fillOpacity: 0.7
+            });
         }
 
         $scope.getLayerReset = function(parentLayer, id) {
-            console.log("reset")
-            var e = {};
-            e.layer = parentLayer._layers[id];
-            $scope.resetHighlight(e);
-            $scope.colorGrab = parentLayer.color;
+            
+            if(!parentLayer.tblField){
+                parentLayer.resetStyle(id)
+            }
+            else{
+            layer = parentLayer._layers[id];
+            parentLayer.setFeatureStyle(id, uStyle[parentLayer.tblField+"Style"])
+            }
+            
         }
 
 
         $scope.resetHighlight = function(e) {
             var layer = e.layer
-            layer.setStyle({
-                color: e.target ? e.target.color : $scope.colorGrab,
-                weight: 2,
-                fillOpacity: .1
-            })
+            if(!e.target.tblField){
+                e.target.resetStyle(layer.id)
+            }
+            else{
+                layer = e.layer;
+                var func = e.target.tblField+"Style"
+                console.log(uStyle[func])
+                e.target.setFeatureStyle(layer.feature.id, uStyle[func])
+            }
+            //e.target.resetStyle(layer.feature.id);
         }
 
         //* replace with resetStyle() method
