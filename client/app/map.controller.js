@@ -149,6 +149,13 @@ app.controller('MapCtrl', function($scope, uStyle) {
     if (!$scope.map) {
         $scope.map = L.map('map').setView([40.792240, -73.138260], 12);
 
+
+        L.easyPrint({
+        title: 'My awesome print button',
+        position: 'topright',
+        elementsToHide: 'button, h2, h3, .leaflet-control-minimap'
+        }).addTo($scope.map);
+
         function handleMouseDown(event) {
           $scope.map.boxZoom._onMouseDown.call($scope.map.boxZoom, { clientX:event.originalEvent.clientX, clientY:event.originalEvent.clientY, which:1, shiftKey:true });
           $scope.map.dragging.disable();
@@ -174,7 +181,7 @@ app.controller('MapCtrl', function($scope, uStyle) {
         })
     }
 
-    L.esri.basemapLayer('Topographic').addTo($scope.map);
+   
 
     var miniMap = new L.Control.MiniMap(L.esri.basemapLayer('Topographic'), { toggleDisplay: true }).addTo($scope.map);
     $scope.data = [];
@@ -191,6 +198,8 @@ app.controller('MapCtrl', function($scope, uStyle) {
             referer: window.location.origin
         }, callback);
     }
+
+    
 
     serverAuth(function(error, response) {
         $scope.dl = L.esri.featureLayer({

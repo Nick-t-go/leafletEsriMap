@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>ArcMap HelloWorld</title>
+    <link rel="stylesheet" type="text/css"  href="/leaflet-easyPrint/dist/easyPrint.css">
+    <link rel="stylesheet" type="text/css"  href="/leafletDraw/dist/leaflet.draw.css">
+    <link rel="stylesheet" type="text/css"  href="/leafletMeasure/leaflet.measurecontrol.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
  <!--    For Spinner -->
     <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
@@ -33,22 +36,35 @@
 
 <div style="height:94vh; width:100vw"  ui-view></div>
 
+<!-- BOOTSTRAP jQuery -->
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>  
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js" ></script>
-<!-- <script src="https://js.arcgis.com/3.16/"></script> -->
-<script type="text/javascript" src="/angular/angular.js"></script>
-<script type="text/javascript" src="/angular-esri-map/dist/angular-esri-map.js"></script>
-<!-- <script src="http://cdn.jsdelivr.net/leaflet.esri.related/2.0.0/esri-leaflet-related.js"></script> -->
 <script type="text/javascript" src="/bootstrap/dist/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/leaflet-minimap/src/Control.MiniMap.js"></script>
+<!-- <script src="https://js.arcgis.com/3.16/"></script> -->
 
 <script type="text/javascript" src="/app/credentials.js"></script>
+<!-- ANGULAR -->
+<script type="text/javascript" src="/angular/angular.js"></script>
+<script type="text/javascript" src="/angular-esri-map/dist/angular-esri-map.js"></script>
 <script type="text/javascript" src="/angular-ui-router/release/angular-ui-router.min.js"></script>
+
+<!-- Leaflet -->
+<script src="http://cdn.jsdelivr.net/leaflet.esri.related/2.0.0/esri-leaflet-related.js"></script>
+<script type="text/javascript" src="/leaflet-minimap/src/Control.MiniMap.js"></script>
+<script type="text/javascript" src="/leaflet-easyPrint/dist/leaflet.easyPrint.js"></script>
+<script type="text/javascript" src="/leafletDraw/dist/leaflet.draw.js"></script>
+<script type="text/javascript" src="/leafletMeasure/leaflet.measurecontrol.js"></script>
+
+<!-- App -->
 <script type="text/javascript" src="/app/main.js"></script>
 <script type="text/javascript" src="/app/map.controller.js"></script>
 <script type="text/javascript" src="/app/contractInfo.directive.js"></script>
 <script type="text/javascript" src="/app/legend.directive.js"></script>
 <script type="text/javascript" src="/app/uniqueStyle.factory.js"></script>
 <script type="text/javascript" src="/app/authenticate.factory.js"></script>
+<script type="text/javascript" src="/app/draw.directive.js"></script>
+<script type="text/javascript" src="/app/draw.controller.js"></script>
+
+
 </body>
 </html>

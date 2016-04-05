@@ -1,0 +1,9 @@
+<button ng-click="createBookmark()" style=" position: absolute; z-index: 500;" class="btn">Capture</button>
+<div style=" right: 25px; position: absolute; z-index: 500;">
+	<button ng-click="zoomTo()"  class="btn">Go To</button>
+	<div class="col-md-4 ">  
+	    <select  id="baseSelect" ng-change="changeBase(base)" class="selectpicker" ng-options="base for base in baseMapOptions" 
+	    ng-model="base">
+      	</select>
+    </div>
+</div>
