@@ -271,7 +271,7 @@ app.controller('MapCtrl', function($scope, uStyle) {
 
         initFeatureLayer( $scope.sewerMains, "Sewer Mains", 'polyline')
 
-        uStyle.subType($scope.sewerMains)
+        uStyle.subType($scope.sewerMains, uStyle.subTypeStyle)
            
 
         $scope.dl.on('authenticationrequired', function(e) {

@@ -9,7 +9,7 @@ app.factory('uStyle', function() {
 
 
         horizontalQualityStyle:function(feature){
-            console.log('in factory')
+            console.log(feature)
                 var c, o = 0.75;
                 switch (feature.properties.FkMhHorizontalQuality) {
 
@@ -42,7 +42,7 @@ app.factory('uStyle', function() {
                         c = '#005CE6';
                         break;
                 }
-                return { color: c, opacity: o, weight: .5 };
+                return { color: c, opacity: o, weight: .5, 'z-index':500  };
             },
 
         dPsSewerDistrict: function(featureLayer, func) {
@@ -67,7 +67,7 @@ app.factory('uStyle', function() {
                         c = '#0066ff';
                         break;
                 }
-                return { color: c, opacity: o, weight: .5 };
+                return { color: c, opacity: o, weight: .5};
             },
 
 
